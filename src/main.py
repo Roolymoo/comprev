@@ -5,23 +5,9 @@ from pygame import display
 from pygame import draw
 from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w
 
-import collision
+from render import update_display
 from player import Player
-
-
-def update_display(update_queue):
-    """(deque) -> NoneType
-    Updates display with Rects given in update_queue, and clears update_queue."""
-    display.update(update_queue)
-
-    update_queue.clear()
-
-def clear(screen, obj_list, obj, update_queue):
-    """(Surface, list, *, deque) -> NoneType
-    For each obj in obj_list that obj overlaps with, call their render() method."""
-    for elem in obj_list:
-        if collision.is_collides(elem, obj):
-            elem.render(screen, update_queue)
+from background import Background
 
 
 if __name__ == "__main__":
@@ -53,10 +39,15 @@ if __name__ == "__main__":
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
+    env_obj_list = deque()
+
     # init rendering
     update_queue = deque() # Queue of rects specifying areas of display to update
 
-    screen.fill(GREY)
+    background = Background(WINDOW_WIDTH, WINDOW_HEIGHT, GREY)
+    background.render(screen, update_queue)
+
+    env_obj_list.append(background)
 
     # Draw grid (debug)
     # 60x60 tiles, 20 x 14 tiles
@@ -74,7 +65,7 @@ if __name__ == "__main__":
 
     # Draw player (debug)
     player = Player(WINDOW_WIDTH,WINDOW_HEIGHT)
-    player.render(screen)
+    player.render(screen, update_queue)
 
     # Force update display (generally handled at end of main loop below)
     display.flip()
@@ -82,6 +73,10 @@ if __name__ == "__main__":
     while running:
         for event in pygame.event.get():
             if event.type == KEYDOWN:
+                if event.key in (K_a, K_d, K_w, K_s):
+                    # player to be moved, clear old location
+                    background.render(screen, update_queue, player.rect.copy())
+
                 if event.key == K_a:
                     player.move_left()
                 elif event.key == K_d:
@@ -93,10 +88,8 @@ if __name__ == "__main__":
             elif event.type == QUIT:
                 running = False
 
-            player.render(screen)
+            player.render(screen, update_queue)
 
-            display.flip()
-
-            # update_display(update_queue)
+            update_display(update_queue)
 
         fps_clock.tick(FPS)
