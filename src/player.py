@@ -1,5 +1,6 @@
 from pygame import draw
 
+
 class Player:
     def __init__(self, bond_x, bond_y):
         self.x = 0
