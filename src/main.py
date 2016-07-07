@@ -8,7 +8,16 @@ from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w
 from render import update_display
 from player import Player
 from background import Background
+from obj import Obj
+from img import load_img
 
+
+def _is_collides(rect):
+    for obj in env_obj_list:
+        if rect.colliderect(obj.rect):
+            return True
+
+    return False
 
 if __name__ == "__main__":
     # init
@@ -17,7 +26,7 @@ if __name__ == "__main__":
     pygame.init()
 
     # allow key repeating for holding them down
-    # these values right?
+    # i just pulled these values off internets
     KEY_DELAY = 1
     KEY_INTERVAL = 50
     pygame.key.set_repeat(KEY_DELAY, KEY_INTERVAL)
@@ -25,8 +34,10 @@ if __name__ == "__main__":
     fps_clock = pygame.time.Clock()
     FPS = 20
 
-    WINDOW_WIDTH = 1200
-    WINDOW_HEIGHT = 840
+    WINDOW_WIDTH = 1000
+    WINDOW_HEIGHT = 700
+
+    TILE_SIZE = 50
 
     # Mouse button codes (pygame specific)
     LEFT_MB = 1
@@ -35,6 +46,9 @@ if __name__ == "__main__":
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
     GREY = (211, 211, 211)
+
+    # Art
+    gbg_can_n = "garbage_can.png"
 
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -47,28 +61,27 @@ if __name__ == "__main__":
     background = Background(WINDOW_WIDTH, WINDOW_HEIGHT, GREY)
     background.render(screen, update_queue)
 
-    env_obj_list.append(background)
+    # draw a bunch of garbage cans (debug)
+    x_coord = TILE_SIZE * 3
+    while x_coord < TILE_SIZE * 10:
+        y_coord = TILE_SIZE * 3
+        while y_coord < WINDOW_HEIGHT:
+            gbg_can = Obj(x_coord, y_coord, TILE_SIZE)
+            gbg_can.img = load_img(gbg_can_n)
+            gbg_can.render(screen, update_queue)
 
-    # Draw grid (debug)
-    # 60x60 tiles, 20 x 14 tiles
-    size = 60
-    # vertical lines
-    x_coord = size
-    while x_coord < WINDOW_WIDTH:
-        draw.line(screen, WHITE, (x_coord, 0), (x_coord, WINDOW_HEIGHT))
-        x_coord += size
-    # horizontal lines
-    y_coord = size
-    while y_coord < WINDOW_HEIGHT:
-        draw.line(screen, WHITE, (0, y_coord), (WINDOW_WIDTH, y_coord))
-        y_coord += size
+            env_obj_list.append(gbg_can)
+
+            y_coord += TILE_SIZE * 2
+
+        x_coord += TILE_SIZE * 2
 
     # Draw player (debug)
-    player = Player(WINDOW_WIDTH,WINDOW_HEIGHT)
+    player = Player(WINDOW_WIDTH, WINDOW_HEIGHT, TILE_SIZE)
     player.render(screen, update_queue)
 
     # Force update display (generally handled at end of main loop below)
-    display.flip()
+    update_display(update_queue)
 
     while running:
         for event in pygame.event.get():
@@ -77,14 +90,23 @@ if __name__ == "__main__":
                     # player to be moved, clear old location
                     background.render(screen, update_queue, player.rect.copy())
 
-                if event.key == K_a:
-                    player.move_left()
-                elif event.key == K_d:
-                    player.move_right()
-                elif event.key == K_w:
-                    player.move_up()
-                elif event.key == K_s:
-                    player.move_down()
+                    rect = player.rect.copy()
+                    if event.key == K_a:
+                        rect.x -= player.mov_unit
+                        if not _is_collides(rect):
+                            player.move_left()
+                    elif event.key == K_d:
+                        rect.x += player.mov_unit
+                        if not _is_collides(rect):
+                            player.move_right()
+                    elif event.key == K_w:
+                        rect.y -= player.mov_unit
+                        if not _is_collides(rect):
+                            player.move_up()
+                    elif event.key == K_s:
+                        rect.y += player.mov_unit
+                        if not _is_collides(rect):
+                            player.move_down()
             elif event.type == QUIT:
                 running = False
 

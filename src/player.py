@@ -2,12 +2,12 @@ from pygame import draw, Rect
 
 
 class Player:
-    def __init__(self, bond_x, bond_y):
+    def __init__(self, bond_x, bond_y, size):
         # rect contains player
-        self.rect = Rect(0, 0, 60, 60)
+        self.rect = Rect(0, 0, size, size)
         self.bond_x = bond_x - self.rect.w
         self.bond_y = bond_y - self.rect.h
-        self.mov_unit = 15
+        self.mov_unit = int(size / 5)
 
     def move_left(self):
         if self.rect.x > self.mov_unit:
