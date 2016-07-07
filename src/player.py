@@ -8,6 +8,7 @@ class Player:
         self.bond_x = bond_x - self.rect.w
         self.bond_y = bond_y - self.rect.h
         self.mov_unit = int(size / 5)
+        self.img = None
 
     def move_left(self):
         if self.rect.x > self.mov_unit:
@@ -26,8 +27,6 @@ class Player:
             self.rect.y += self.mov_unit
 
     def render(self, screen, update_queue):
-        blue = (30, 144, 255)
-
-        draw.rect(screen, blue, self.rect)
+        screen.blit(self.img, self.rect)
 
         update_queue.append(self.rect)

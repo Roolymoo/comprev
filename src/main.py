@@ -48,7 +48,8 @@ if __name__ == "__main__":
     GREY = (211, 211, 211)
 
     # Art
-    gbg_can_n = "garbage_can.png"
+    GBG_CAN_N = "garbage_can.png"
+    COMP_SAD_N = "computer_sad.png"
 
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -67,7 +68,7 @@ if __name__ == "__main__":
         y_coord = TILE_SIZE * 3
         while y_coord < WINDOW_HEIGHT:
             gbg_can = Obj(x_coord, y_coord, TILE_SIZE)
-            gbg_can.img = load_img(gbg_can_n)
+            gbg_can.img = load_img(GBG_CAN_N)
             gbg_can.render(screen, update_queue)
 
             env_obj_list.append(gbg_can)
@@ -78,6 +79,7 @@ if __name__ == "__main__":
 
     # Draw player (debug)
     player = Player(WINDOW_WIDTH, WINDOW_HEIGHT, TILE_SIZE)
+    player.img = load_img(COMP_SAD_N)
     player.render(screen, update_queue)
 
     # Force update display (generally handled at end of main loop below)
