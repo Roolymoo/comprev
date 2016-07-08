@@ -45,6 +45,7 @@ if __name__ == "__main__":
     GBG_CAN_N = "garbage_can.png"
     COMP_SAD_N = "computer_sad.png"
     COMP_HAP_N = "computer_happy.png"
+    MAN_STAND_N = "man_standing.png"
 
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -78,9 +79,9 @@ if __name__ == "__main__":
         x_coord += TILE_SIZE * 2
 
     # Draw player (debug)
-    player_size = IMG_SIZES["computer_sad"]
+    player_size = IMG_SIZES["man_standing"]
     player = Player(WINDOW_WIDTH, WINDOW_HEIGHT, player_size[0], player_size[1])
-    player.img = load_img(COMP_SAD_N)
+    player.img = load_img(MAN_STAND_N)
     player.render(screen, update_queue)
 
     # create a capture bot (debug)

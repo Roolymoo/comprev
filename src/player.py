@@ -7,7 +7,7 @@ class Player:
         self.rect = Rect(0, 0, size_x, size_y)
         self.bond_x = bond_x - self.rect.w
         self.bond_y = bond_y - self.rect.h
-        self.mov_unit_x = int(size_x / 5)
+        self.mov_unit_x = int(size_x / 2.5)
         self.mov_unit_y = int(size_y / 5)
         self.img = None
 
