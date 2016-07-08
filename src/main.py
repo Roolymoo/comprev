@@ -7,7 +7,7 @@ from render import update_display
 from player import Player
 from background import Background
 from obj import Obj
-from img import load_img
+from img import load_img, load_sizes
 from collision import is_collides
 from monsters import CaptureBot
 
@@ -41,6 +41,7 @@ if __name__ == "__main__":
     GREY = (211, 211, 211)
 
     # Art
+    IMG_SIZES = load_sizes("sizes.txt")
     GBG_CAN_N = "garbage_can.png"
     COMP_SAD_N = "computer_sad.png"
     COMP_HAP_N = "computer_happy.png"
@@ -59,11 +60,14 @@ if __name__ == "__main__":
     background.render(screen, update_queue)
 
     # draw a bunch of garbage cans (debug)
+    gbg_can_size = IMG_SIZES["garbage_can"]
+
     x_coord = TILE_SIZE * 3
     while x_coord < TILE_SIZE * 10:
         y_coord = TILE_SIZE * 3
         while y_coord < WINDOW_HEIGHT:
-            gbg_can = Obj(x_coord, y_coord, TILE_SIZE)
+            gbg_can = Obj(x_coord, y_coord, gbg_can_size[0], gbg_can_size[1])
+
             gbg_can.img = load_img(GBG_CAN_N)
             gbg_can.render(screen, update_queue)
 
@@ -74,7 +78,8 @@ if __name__ == "__main__":
         x_coord += TILE_SIZE * 2
 
     # Draw player (debug)
-    player = Player(WINDOW_WIDTH, WINDOW_HEIGHT, TILE_SIZE)
+    player_size = IMG_SIZES["computer_sad"]
+    player = Player(WINDOW_WIDTH, WINDOW_HEIGHT, player_size[0], player_size[1])
     player.img = load_img(COMP_SAD_N)
     player.render(screen, update_queue)
 
@@ -98,19 +103,19 @@ if __name__ == "__main__":
 
                     rect = player.rect.copy()
                     if event.key == K_a:
-                        rect.x -= player.mov_unit
+                        rect.x -= player.mov_unit_x
                         if not is_collides(rect, env_obj_list, monster_list):
                             player.move_left()
                     elif event.key == K_d:
-                        rect.x += player.mov_unit
+                        rect.x += player.mov_unit_x
                         if not is_collides(rect, env_obj_list, monster_list):
                             player.move_right()
                     elif event.key == K_w:
-                        rect.y -= player.mov_unit
+                        rect.y -= player.mov_unit_y
                         if not is_collides(rect, env_obj_list, monster_list):
                             player.move_up()
                     elif event.key == K_s:
-                        rect.y += player.mov_unit
+                        rect.y += player.mov_unit_y
                         if not is_collides(rect, env_obj_list, monster_list):
                             player.move_down()
             elif event.type == QUIT:

@@ -1,0 +1,2 @@
+garbage_can 21 36
+computer_sad 32 40
