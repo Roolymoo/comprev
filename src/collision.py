@@ -1,8 +1,6 @@
-##############################################################################
-#
-# Methods for collision detection.
-#
-##############################################################################
+from pygame import Rect
+
+from obj import Obj
 
 
 def is_clicked(object, pos):
@@ -12,8 +10,12 @@ def is_clicked(object, pos):
     return object.rect.collidepoint(pos)
 
 
-def is_collides(object1, object2):
-    """(*, *) -> bool
-    Returns true if the .rect attributes of each object collide. Note that only intersection of top and bottom, or left
-    and right edges returns false."""
-    return object1.rect.colliderect(object2.rect)
+def is_collides(rect, *args):
+    for obj_list in args:
+        for obj in obj_list:
+            if obj is Rect and rect.colliderect(obj):
+                return True
+            elif rect.colliderect(obj.rect):
+                return True
+
+    return False

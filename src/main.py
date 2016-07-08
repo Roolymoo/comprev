@@ -1,8 +1,6 @@
 from collections import deque
 
 import pygame
-from pygame import display
-from pygame import draw
 from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w
 
 from render import update_display
@@ -10,14 +8,9 @@ from player import Player
 from background import Background
 from obj import Obj
 from img import load_img
+from collision import is_collides
+from monsters import CaptureBot
 
-
-def _is_collides(rect):
-    for obj in env_obj_list:
-        if rect.colliderect(obj.rect):
-            return True
-
-    return False
 
 if __name__ == "__main__":
     # init
@@ -32,7 +25,7 @@ if __name__ == "__main__":
     pygame.key.set_repeat(KEY_DELAY, KEY_INTERVAL)
 
     fps_clock = pygame.time.Clock()
-    FPS = 20
+    FPS = 30
 
     WINDOW_WIDTH = 1000
     WINDOW_HEIGHT = 700
@@ -50,11 +43,14 @@ if __name__ == "__main__":
     # Art
     GBG_CAN_N = "garbage_can.png"
     COMP_SAD_N = "computer_sad.png"
+    COMP_HAP_N = "computer_happy.png"
 
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
     env_obj_list = deque()
+
+    monster_list = deque()
 
     # init rendering
     update_queue = deque() # Queue of rects specifying areas of display to update
@@ -82,6 +78,14 @@ if __name__ == "__main__":
     player.img = load_img(COMP_SAD_N)
     player.render(screen, update_queue)
 
+    # create a capture bot (debug)
+    cbot = CaptureBot(WINDOW_WIDTH - TILE_SIZE, WINDOW_HEIGHT - TILE_SIZE, TILE_SIZE,
+                      WINDOW_WIDTH, WINDOW_HEIGHT)
+    cbot.img = load_img(COMP_HAP_N)
+    cbot.render(screen, update_queue)
+
+    monster_list.append(cbot)
+
     # Force update display (generally handled at end of main loop below)
     update_display(update_queue)
 
@@ -95,25 +99,38 @@ if __name__ == "__main__":
                     rect = player.rect.copy()
                     if event.key == K_a:
                         rect.x -= player.mov_unit
-                        if not _is_collides(rect):
+                        if not is_collides(rect, env_obj_list, monster_list):
                             player.move_left()
                     elif event.key == K_d:
                         rect.x += player.mov_unit
-                        if not _is_collides(rect):
+                        if not is_collides(rect, env_obj_list, monster_list):
                             player.move_right()
                     elif event.key == K_w:
                         rect.y -= player.mov_unit
-                        if not _is_collides(rect):
+                        if not is_collides(rect, env_obj_list, monster_list):
                             player.move_up()
                     elif event.key == K_s:
                         rect.y += player.mov_unit
-                        if not _is_collides(rect):
+                        if not is_collides(rect, env_obj_list, monster_list):
                             player.move_down()
             elif event.type == QUIT:
                 running = False
 
             player.render(screen, update_queue)
 
-            update_display(update_queue)
+        # monster ai
+        for monster in monster_list:
+            # clear old location
+            background.render(screen, update_queue, monster.rect.copy())
+
+            # remove this monster from general list when checking collisions
+            monster_list_copy = monster_list.__copy__()
+            monster_list_copy.remove(monster)
+
+            monster.move(player, env_obj_list, monster_list_copy)
+
+            monster.render(screen, update_queue)
+
+        update_display(update_queue)
 
         fps_clock.tick(FPS)
