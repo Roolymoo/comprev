@@ -2,8 +2,8 @@ from pygame import Rect
 
 
 class Obj:
-    def __init__(self, x, y, size):
-        self.rect = Rect(x, y, size, size)
+    def __init__(self, x, y, size_x, size_y):
+        self.rect = Rect(x, y, size_x, size_y)
         self.img = None
 
     def render(self, screen, update_queue):
