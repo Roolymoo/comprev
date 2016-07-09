@@ -9,7 +9,7 @@ from background import Background
 from obj import Obj
 from img import load_img
 from collision import is_collides
-from monsters import CaptureBot
+from monsters import CaptureBot, LaserBot
 
 
 if __name__ == "__main__":
@@ -48,8 +48,10 @@ if __name__ == "__main__":
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
+    # put desks, garbage cans, etc in here
     env_obj_list = deque()
 
+    # put the ai stuff in here, but not player
     monster_list = deque()
 
     # init rendering
@@ -79,12 +81,18 @@ if __name__ == "__main__":
     player.render(screen, update_queue)
 
     # create a capture bot (debug)
-    cbot = CaptureBot(WINDOW_WIDTH - TILE_SIZE, WINDOW_HEIGHT - TILE_SIZE, TILE_SIZE,
-                      WINDOW_WIDTH, WINDOW_HEIGHT)
+    cbot = CaptureBot(WINDOW_WIDTH - TILE_SIZE, WINDOW_HEIGHT - TILE_SIZE, TILE_SIZE)
     cbot.img = load_img(COMP_HAP_N)
     cbot.render(screen, update_queue)
 
     monster_list.append(cbot)
+
+    # create a laser bot (debug)
+    lbot = LaserBot(WINDOW_WIDTH - TILE_SIZE, 0, TILE_SIZE)
+    lbot.img = load_img(COMP_HAP_N)
+    lbot.render(screen, update_queue)
+
+    monster_list.append(lbot)
 
     # Force update display (generally handled at end of main loop below)
     update_display(update_queue)
@@ -99,19 +107,19 @@ if __name__ == "__main__":
                     rect = player.rect.copy()
                     if event.key == K_a:
                         rect.x -= player.mov_unit
-                        if not is_collides(rect, env_obj_list, monster_list):
+                        if is_collides(rect, env_obj_list, monster_list) is None:
                             player.move_left()
                     elif event.key == K_d:
                         rect.x += player.mov_unit
-                        if not is_collides(rect, env_obj_list, monster_list):
+                        if is_collides(rect, env_obj_list, monster_list) is None:
                             player.move_right()
                     elif event.key == K_w:
                         rect.y -= player.mov_unit
-                        if not is_collides(rect, env_obj_list, monster_list):
+                        if is_collides(rect, env_obj_list, monster_list) is None:
                             player.move_up()
                     elif event.key == K_s:
                         rect.y += player.mov_unit
-                        if not is_collides(rect, env_obj_list, monster_list):
+                        if is_collides(rect, env_obj_list, monster_list) is None:
                             player.move_down()
             elif event.type == QUIT:
                 running = False
@@ -130,6 +138,15 @@ if __name__ == "__main__":
             monster.move(player, env_obj_list, monster_list_copy)
 
             monster.render(screen, update_queue)
+
+            # have any laser bots shoot
+            if type(monster) is LaserBot and monster.shot is not None:
+                # player ded (debug)
+                monster.shot = None
+
+            # Check if player died
+            if type(monster) is CaptureBot and isinstance(monster.adj_obj, Player):
+                running = False
 
         update_display(update_queue)
 
