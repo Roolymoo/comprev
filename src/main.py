@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     # music
     MUSIC_DIR = "music"
-    MUSIC_N = "robotpoop (ai)_beats.wav"
+    MUSIC_N = "robotpoop (ai)_v2.wav"
 
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
