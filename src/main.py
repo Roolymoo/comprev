@@ -2,6 +2,7 @@ from collections import deque
 
 import pygame
 from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w
+from pygame import time
 
 from render import update_display
 from player import Player
@@ -15,6 +16,7 @@ from monsters import CaptureBot, LaserBot
 if __name__ == "__main__":
     # init
     running = True
+    killed = False
 
     pygame.init()
 
@@ -88,7 +90,7 @@ if __name__ == "__main__":
     monster_list.append(cbot)
 
     # create a laser bot (debug)
-    lbot = LaserBot(WINDOW_WIDTH - TILE_SIZE, 0, TILE_SIZE)
+    lbot = LaserBot(WINDOW_WIDTH - TILE_SIZE, TILE_SIZE * 3, TILE_SIZE)
     lbot.img = load_img(COMP_HAP_N)
     lbot.render(screen, update_queue)
 
@@ -97,7 +99,7 @@ if __name__ == "__main__":
     # Force update display (generally handled at end of main loop below)
     update_display(update_queue)
 
-    while running:
+    while running and (not killed):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key in (K_a, K_d, K_w, K_s):
@@ -139,15 +141,16 @@ if __name__ == "__main__":
 
             monster.render(screen, update_queue)
 
-            # have any laser bots shoot
-            if type(monster) is LaserBot and monster.shot is not None:
-                # player ded (debug)
-                monster.shot = None
-
             # Check if player died
             if type(monster) is CaptureBot and isinstance(monster.adj_obj, Player):
-                running = False
+                killed = True
+            if type(monster) is LaserBot and (monster.shot is not None):
+                killed = True
 
         update_display(update_queue)
 
         fps_clock.tick(FPS)
+
+    if killed:
+        # freeze for a sec so player can see how they died (e.g. see laser rendered for a bit)
+        time.wait(2000)
