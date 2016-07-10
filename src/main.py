@@ -7,7 +7,7 @@ from render import update_display
 from player import Player
 from background import Background
 from obj import Obj
-from img import load_img, load_sizes
+from img import load_img
 from collision import is_collides
 from monsters import CaptureBot, LaserBot
 
@@ -41,11 +41,9 @@ if __name__ == "__main__":
     GREY = (211, 211, 211)
 
     # Art
-    IMG_SIZES = load_sizes("sizes.txt")
     GBG_CAN_N = "garbage_can.png"
     COMP_SAD_N = "computer_sad.png"
     COMP_HAP_N = "computer_happy.png"
-    MAN_STAND_N = "man_standing.png"
 
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -63,14 +61,11 @@ if __name__ == "__main__":
     background.render(screen, update_queue)
 
     # draw a bunch of garbage cans (debug)
-    gbg_can_size = IMG_SIZES["garbage_can"]
-
     x_coord = TILE_SIZE * 3
     while x_coord < TILE_SIZE * 10:
         y_coord = TILE_SIZE * 3
         while y_coord < WINDOW_HEIGHT:
-            gbg_can = Obj(x_coord, y_coord, gbg_can_size[0], gbg_can_size[1])
-
+            gbg_can = Obj(x_coord, y_coord, TILE_SIZE)
             gbg_can.img = load_img(GBG_CAN_N)
             gbg_can.render(screen, update_queue)
 
@@ -81,9 +76,8 @@ if __name__ == "__main__":
         x_coord += TILE_SIZE * 2
 
     # Draw player (debug)
-    player_size = IMG_SIZES["man_standing"]
-    player = Player(WINDOW_WIDTH, WINDOW_HEIGHT, player_size[0], player_size[1])
-    player.img = load_img(MAN_STAND_N)
+    player = Player(WINDOW_WIDTH, WINDOW_HEIGHT, TILE_SIZE)
+    player.img = load_img(COMP_SAD_N)
     player.render(screen, update_queue)
 
     # create a capture bot (debug)

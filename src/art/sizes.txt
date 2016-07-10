@@ -1,7 +1,0 @@
-garbage_can 21 36
-computer_sad 31 37
-computer_sad2 32 37
-computer_happy 30 32
-chair 24 34
-floor_white 50 50
-man_standing 24 51
