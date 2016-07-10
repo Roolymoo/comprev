@@ -1,4 +1,5 @@
 from collections import deque
+import os.path
 
 import pygame
 from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w
@@ -46,6 +47,10 @@ if __name__ == "__main__":
     GBG_CAN_N = "garbage_can.png"
     COMP_SAD_N = "computer_sad.png"
     COMP_HAP_N = "computer_happy.png"
+
+    # music
+    MUSIC_DIR = "music"
+    MUSIC_N = "robotpoop (ai)_beats.wav"
 
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -98,6 +103,11 @@ if __name__ == "__main__":
 
     # Force update display (generally handled at end of main loop below)
     update_display(update_queue)
+
+    # music!
+    pygame.mixer.music.load(os.path.join(MUSIC_DIR, MUSIC_N))
+    # play indefinitely
+    pygame.mixer.music.play(-1)
 
     while running and (not killed):
         for event in pygame.event.get():
