@@ -1,6 +1,4 @@
-from operator import add, sub, gt, lt
-
-from pygame import Rect
+from pygame import Rect, draw
 
 from collision import is_collides
 
@@ -32,32 +30,44 @@ def _is_clear_shot(lbot, dir, player, *args):
     """Checks if there is no obstruction between lbot and player. If there isn't, a rect is
     loaded into lbot.shot for shooting phase, and True is returned. Otherwise False is
     returned."""
-    # TODO: center the laser more. hopefully this fixes the ai stopping oddly to the right of player
+    # create rectangle extending from middle of lbot to edge of screen
+    lb_x, lb_y, lb_w, lb_h = lbot.rect.x, lbot.rect.y, lbot.rect.w, lbot.rect.h
+    incr_w = int(lb_w / 3)
+    incr_h = int(lb_h / 3)
+    bond_x = player.bond_x
+    bond_y = player.bond_y
     if dir == "left":
-        x, y = lbot.rect.x - lbot.mov_unit, lbot.rect.y + lbot.mov_unit
+        x, y, w, h = 0, lb_y + incr_h, lb_x, incr_h
     elif dir == "right":
-        x, y = lbot.rect.x + lbot.rect.w, lbot.rect.y + lbot.mov_unit
+        x, y, w, h = lb_x + lb_w, lb_y + incr_h, bond_x - (lb_x + lb_w), incr_h
     elif dir == "up":
-        x, y = lbot.rect.x + lbot.mov_unit, lbot.rect.y
+        x, y, w, h = lb_x + incr_w, 0, incr_w, lb_y
     elif dir == "down":
-        x, y = lbot.rect.x + lbot.mov_unit, lbot.rect.y + lbot.rect.h
+        x, y, w, h = lb_x + incr_w, lb_y + lb_h, incr_w, bond_y - (lb_y + lb_h)
 
-    shot = Rect(x, y, lbot.mov_unit, lbot.rect.y + 2 * lbot.mov_unit)
-
-    d = {"left": [sub, 0, 0, gt], "right": [add, 0, player.bond_x, lt], "up": [sub, 1, 0, gt],
-         "down": [add, 1, player.bond_y, lt]}
-    op, i, bond, comp = d[dir]
-
-    # try to create the shot
-    while not is_collides(shot, *args) and comp(shot[i], bond):
-        # grow shot
-        shot[i] = op(shot[i], player.mov_unit)
+    shot = Rect(x, y, w, h)
 
     if shot.colliderect(player.rect):
-        lbot.shot = shot
-        return True
-    else:
-        return False
+        # hit player, modify rect to extend only to player
+        p_x, p_y, p_w, p_h = player.rect.x, player.rect.y, player.rect.w, player.rect.h
+        if dir == "left":
+            shot.x = p_x + p_w
+            shot.w -= p_x + p_w
+        elif dir == "right":
+            shot.w -= bond_x - p_x
+        elif dir == "up":
+            shot.y = p_y + p_h
+            shot.h -= p_y + p_h
+        elif dir == "down":
+            shot.h -= bond_y - p_y
+
+        if is_collides(shot, *args):
+            # obstacles in way, no good (player shouldn't be in args)
+            return False
+        else:
+            # clear, successful shot!
+            lbot.shot = shot
+            return True
 
 
 class CaptureBot:
@@ -114,17 +124,28 @@ class LaserBot(CaptureBot):
 
         # check for a clear shot. if there is one, saves it for shooting phase, doesnt move
         if p_x < b_x:
-            if _is_clear_shot(self, "left", player, [player], *args):
+            if _is_clear_shot(self, "left", player, *args):
                 return
         if p_x > b_x:
-            if _is_clear_shot(self, "right", player, [player], *args):
+            if _is_clear_shot(self, "right", player, *args):
                 return
         if p_y < b_y:
-            if _is_clear_shot(self, "up", player, [player], *args):
+            if _is_clear_shot(self, "up", player, *args):
                 return
         if p_y > b_y:
-            if _is_clear_shot(self, "down", player, [player], *args):
+            if _is_clear_shot(self, "down", player, *args):
                 return
 
         # no clear shot, move closer to player instead
         CaptureBot.move(self, player, *args)
+
+    def render(self, screen, update_queue):
+        # self
+        screen.blit(self.img, self.rect)
+        # shot, if any
+        if self.shot is not None:
+            red = (255, 0, 0)
+            draw.rect(screen, red, self.shot)
+
+        update_queue.append(self.rect)
+        update_queue.append(self.shot)
