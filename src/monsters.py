@@ -48,7 +48,19 @@ def _is_clear_shot(lbot, dir, player, *args):
     shot = Rect(x, y, w, h)
 
     if shot.colliderect(player.rect):
-        # hit player
+        # hit player, modify rect to extend only to player
+        p_x, p_y, p_w, p_h = player.rect.x, player.rect.y, player.rect.w, player.rect.h
+        if dir == "left":
+            shot.x = p_x + p_w
+            shot.w -= p_x + p_w
+        elif dir == "right":
+            shot.w -= bond_x - p_x
+        elif dir == "up":
+            shot.y = p_y + p_h
+            shot.h -= p_y + p_h
+        elif dir == "down":
+            shot.h -= bond_y - p_y
+
         if is_collides(shot, *args):
             # obstacles in way, no good (player shouldn't be in args)
             return False
