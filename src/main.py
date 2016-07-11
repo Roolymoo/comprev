@@ -44,13 +44,14 @@ if __name__ == "__main__":
     GREY = (211, 211, 211)
 
     # Art
+    PLAYER_N = "man_standing3.png"
     GBG_CAN_N = "garbage_can.png"
     COMP_SAD_N = "computer_sad.png"
     COMP_HAP_N = "computer_happy.png"
 
     # music
     MUSIC_DIR = "music"
-    MUSIC_N = "robotpoop (ai)_beats.wav"
+    MUSIC_N = "robotpoop (ai)_v2.wav"
 
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -84,7 +85,7 @@ if __name__ == "__main__":
 
     # Draw player (debug)
     player = Player(WINDOW_WIDTH, WINDOW_HEIGHT, TILE_SIZE)
-    player.img = load_img(COMP_SAD_N)
+    player.img = load_img(PLAYER_N)
     player.render(screen, update_queue)
 
     # create a capture bot (debug)
@@ -96,7 +97,7 @@ if __name__ == "__main__":
 
     # create a laser bot (debug)
     lbot = LaserBot(WINDOW_WIDTH - TILE_SIZE, TILE_SIZE * 3, TILE_SIZE)
-    lbot.img = load_img(COMP_HAP_N)
+    lbot.img = load_img(COMP_SAD_N)
     lbot.render(screen, update_queue)
 
     monster_list.append(lbot)
