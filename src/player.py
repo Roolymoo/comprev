@@ -1,5 +1,7 @@
 from pygame import draw, Rect
 
+from bomb import Bomb
+
 
 class Player:
     def __init__(self, bond_x, bond_y, size):
@@ -25,6 +27,10 @@ class Player:
     def move_down(self):
         if self.rect.y < self.bond_y - self.mov_unit:
             self.rect.y += self.mov_unit
+
+    def drop_bomb(self, fps):
+        """Returns Bomb object at self's location."""
+        return Bomb(self.rect.copy(), fps)
 
     def render(self, screen, update_queue):
         screen.blit(self.img, self.rect)
