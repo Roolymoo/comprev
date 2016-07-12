@@ -12,8 +12,7 @@ class Bomb:
         self.img = load_img("poop_bomb.png")
         self.fps = fps
         # how long until bomb explodes
-        # TODO: allow player to input # after lifting up from P to specify timer?
-        self.expl_time = 5000
+        self.expl_time = 4000
         # time past since bomb creation
         self.time = 0
         self.clock = time.Clock()
