@@ -3,7 +3,7 @@ import os.path
 
 import pygame
 from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p
-from pygame import time
+from pygame import time, transform
 
 from render import update_display
 from player import Player
@@ -48,6 +48,8 @@ if __name__ == "__main__":
     GBG_CAN_N = "garbage_can.png"
     COMP_SAD_N = "computer_sad.png"
     COMP_HAP_N = "computer_happy.png"
+    CUB_MED_N = "cubicle_med.png"
+    CUB_MED_COM_N = "cubicle_med_computer_happy.png"
 
     # music
     MUSIC_DIR = "music"
@@ -68,39 +70,167 @@ if __name__ == "__main__":
     background = Background(WINDOW_WIDTH, WINDOW_HEIGHT, GREY)
     background.render(screen, update_queue)
 
-    # draw a bunch of garbage cans (debug)
-    x_coord = TILE_SIZE * 3
-    while x_coord < TILE_SIZE * 10:
-        y_coord = TILE_SIZE * 3
-        while y_coord < WINDOW_HEIGHT:
-            gbg_can = Obj(x_coord, y_coord, TILE_SIZE)
-            gbg_can.img = load_img(GBG_CAN_N)
-            gbg_can.render(screen, update_queue)
-
-            env_obj_list.append(gbg_can)
-
-            y_coord += TILE_SIZE * 2
-
-        x_coord += TILE_SIZE * 2
-
-    # Draw player (debug)
-    player = Player(WINDOW_WIDTH, WINDOW_HEIGHT, TILE_SIZE)
+    # Draw player
+    player = Player(WINDOW_WIDTH - TILE_SIZE, WINDOW_HEIGHT - TILE_SIZE, WINDOW_WIDTH,
+                    WINDOW_HEIGHT, TILE_SIZE)
     player.img = load_img(PLAYER_N)
     player.render(screen, update_queue)
 
-    # create a capture bot (debug)
-    cbot = CaptureBot(WINDOW_WIDTH - TILE_SIZE, WINDOW_HEIGHT - TILE_SIZE, TILE_SIZE)
+    # bottom
+    cub = Obj(2 * TILE_SIZE, 9 * TILE_SIZE, 100, 150)
+    cub.img = transform.rotate(transform.flip(load_img(CUB_MED_N), False, True), 90)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cub = Obj(4 * TILE_SIZE, 10 * TILE_SIZE, 150, 100)
+    cub.img = transform.flip(load_img(CUB_MED_N), False, True)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cub = Obj(7 * TILE_SIZE, 10 * TILE_SIZE, 150, 100)
+    cub.img = transform.flip(load_img(CUB_MED_COM_N), False, True)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cub = Obj(10 * TILE_SIZE, 10 * TILE_SIZE, 150, 100)
+    cub.img = transform.flip(load_img(CUB_MED_N), False, True)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cub = Obj(13 * TILE_SIZE, 10 * TILE_SIZE, 150, 100)
+    cub.img = transform.flip(load_img(CUB_MED_COM_N), False, True)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    gbg_can = Obj(16 * TILE_SIZE, 11 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+    gbg_can.img = load_img(GBG_CAN_N)
+    gbg_can.render(screen, update_queue)
+    env_obj_list.append(gbg_can)
+
+    gbg_can = Obj(4 * TILE_SIZE, 9 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+    gbg_can.img = load_img(GBG_CAN_N)
+    gbg_can.render(screen, update_queue)
+    env_obj_list.append(gbg_can)
+
+    cbot = CaptureBot(TILE_SIZE, 10 * TILE_SIZE, TILE_SIZE)
     cbot.img = load_img(COMP_HAP_N)
     cbot.render(screen, update_queue)
-
     monster_list.append(cbot)
 
-    # create a laser bot (debug)
-    lbot = LaserBot(WINDOW_WIDTH - TILE_SIZE, TILE_SIZE * 3, TILE_SIZE)
+    # top-left
+    cub = Obj(3 * TILE_SIZE, TILE_SIZE, 100, 150)
+    cub.img = transform.rotate(transform.flip(load_img(CUB_MED_COM_N), False, True), 90)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cub = Obj(2 * TILE_SIZE, 4 * TILE_SIZE, 150, 100)
+    cub.img = load_img(CUB_MED_N)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cub = Obj(5 * TILE_SIZE, 4 * TILE_SIZE, 100, 150)
+    cub.img = transform.rotate(transform.flip(load_img(CUB_MED_N), False, True), -90)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cub = Obj(5 * TILE_SIZE, 2 * TILE_SIZE, 150, 100)
+    cub.img = transform.flip(load_img(CUB_MED_N), False, True)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    gbg_can = Obj(4 * TILE_SIZE, 6 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+    gbg_can.img = load_img(GBG_CAN_N)
+    gbg_can.render(screen, update_queue)
+    env_obj_list.append(gbg_can)
+
+    lbot = LaserBot(3 * TILE_SIZE, 6 * TILE_SIZE, TILE_SIZE)
     lbot.img = load_img(COMP_SAD_N)
     lbot.render(screen, update_queue)
-
     monster_list.append(lbot)
+
+    lbot = LaserBot(6 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+    lbot.img = load_img(COMP_SAD_N)
+    lbot.render(screen, update_queue)
+    monster_list.append(lbot)
+
+    # top-middle
+    cub = Obj(9 * TILE_SIZE, 2 * TILE_SIZE, 150, 100)
+    cub.img = transform.flip(load_img(CUB_MED_COM_N), False, True)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cub = Obj(10 * TILE_SIZE, 4 * TILE_SIZE, 100, 150)
+    cub.img = transform.rotate(load_img(CUB_MED_N), -90)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cub = Obj(12 * TILE_SIZE, 4 * TILE_SIZE, 150, 100)
+    cub.img = load_img(CUB_MED_COM_N)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cub = Obj(12 * TILE_SIZE, TILE_SIZE, 100, 150)
+    cub.img = transform.rotate(transform.flip(load_img(CUB_MED_N), False, True), -90)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    gbg_can = Obj(12 * TILE_SIZE, 6 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+    gbg_can.img = load_img(GBG_CAN_N)
+    gbg_can.render(screen, update_queue)
+    env_obj_list.append(gbg_can)
+
+    # top-right
+    cub = Obj(16 * TILE_SIZE, 0, 100, 150)
+    cub.img = transform.rotate(transform.flip(load_img(CUB_MED_N), False, True), -90)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    gbg_can = Obj(17 * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+    gbg_can.img = load_img(GBG_CAN_N)
+    gbg_can.render(screen, update_queue)
+    env_obj_list.append(gbg_can)
+
+    # right-middle
+    cub = Obj(17 * TILE_SIZE, 5 * TILE_SIZE, 150, 100)
+    cub.img = transform.flip(load_img(CUB_MED_N), False, True)
+    cub.render(screen, update_queue)
+    env_obj_list.append(cub)
+
+    cbot = CaptureBot(18 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE)
+    cbot.img = load_img(COMP_HAP_N)
+    cbot.render(screen, update_queue)
+    monster_list.append(cbot)
+
+    # # DEBUG LEVEL
+    # # draw a bunch of garbage cans (debug)
+    # x_coord = TILE_SIZE * 3
+    # while x_coord < TILE_SIZE * 10:
+    #     y_coord = TILE_SIZE * 3
+    #     while y_coord < WINDOW_HEIGHT:
+    #         gbg_can = Obj(x_coord, y_coord, TILE_SIZE, TILE_SIZE)
+    #         gbg_can.img = load_img(GBG_CAN_N)
+    #         gbg_can.render(screen, update_queue)
+    #
+    #         env_obj_list.append(gbg_can)
+    #
+    #         y_coord += TILE_SIZE * 2
+    #
+    #     x_coord += TILE_SIZE * 2
+    #
+    #
+    # # create a capture bot (debug)
+    # cbot = CaptureBot(WINDOW_WIDTH - TILE_SIZE, WINDOW_HEIGHT - TILE_SIZE, TILE_SIZE)
+    # cbot.img = load_img(COMP_HAP_N)
+    # cbot.render(screen, update_queue)
+    #
+    # monster_list.append(cbot)
+    #
+    # # create a laser bot (debug)
+    # lbot = LaserBot(WINDOW_WIDTH - TILE_SIZE, TILE_SIZE * 3, TILE_SIZE)
+    # lbot.img = load_img(COMP_SAD_N)
+    # lbot.render(screen, update_queue)
+    #
+    # monster_list.append(lbot)
 
     # variable for reference to deque of destroyed monsters
     destroyed = None
