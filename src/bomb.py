@@ -1,6 +1,7 @@
 from collections import deque
+import os.path
 
-from pygame import Rect, time
+from pygame import Rect, time, mixer
 
 from img import load_img
 
@@ -22,6 +23,7 @@ class Bomb:
     def __init__(self, rect, fps):
         self.rect = rect
         self.img = load_img("poop_bomb.png")
+        self.noise = mixer.Sound(os.path.join("sounds", "explosion_soft.wav"))
         self.fps = fps
         # how long until bomb explodes
         self.expl_time = 4000
@@ -37,13 +39,15 @@ class Bomb:
 
     def explode(self, monster_list):
         """Checks immediately adjacent tiles for monsters, if there are any they are added to a deque object.
-        Returns a BombMess object along with the deque."""
+        Returns a BombMess object along with the deque. Play's bomb noise."""
         x, y, w, h = self.rect
         collis_rect = Rect(x - w, y - h, 3 * w, 3 * h)
         destroyed = deque()
         for monster in monster_list:
             if monster.rect.colliderect(collis_rect):
                 destroyed.append(monster)
+
+        self.noise.play()
 
         return BombMess(self.rect.copy()), destroyed
 
