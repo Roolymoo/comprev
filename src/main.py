@@ -102,6 +102,9 @@ if __name__ == "__main__":
 
     monster_list.append(lbot)
 
+    # variable for reference to deque of destroyed monsters
+    destroyed = None
+
     # bombs
     bomb_list = deque()
 
@@ -168,15 +171,32 @@ if __name__ == "__main__":
         # while you are iterating it)
         bomb_list_c = bomb_list.__copy__()
         for bomb in bomb_list_c:
-            if not bomb.explode():
-                if not is_collides(bomb.rect, [player], monster_list):
-                    bomb.render(screen, update_queue)
+            if not bomb.is_explode():
+                bomb.render(screen, update_queue)
             else:
                 # remove from screen
                 background.render(screen, update_queue, bomb.rect.copy())
 
                 bomb_list.remove(bomb)
-                # TODO explosion
+                bomb_mess, destroyed = bomb.explode(monster_list)
+                bomb_mess.render(screen, update_queue)
+                background.obj_list.append(bomb_mess)
+
+        # re-render any player or monster intersecting any bomb's rect so they are rendered on top
+        if is_collides(player.rect, bomb_list):
+            player.render(screen, update_queue)
+        for monster in monster_list:
+            if is_collides(monster.rect, bomb_list):
+                monster.render(screen, update_queue)
+
+        # remove any destroyed monsters
+        if destroyed is not None:
+            for monster in destroyed:
+                monster_list.remove(monster)
+                # remove from screen
+                background.render(screen, update_queue, monster.rect.copy())
+
+            destroyed = None
 
         update_display(update_queue)
 
