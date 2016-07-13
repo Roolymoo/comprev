@@ -2,7 +2,7 @@ from collections import deque
 import os.path
 
 import pygame
-from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w
+from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p
 from pygame import time
 
 from render import update_display
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     # music
     MUSIC_DIR = "music"
-    MUSIC_N = "robotpoop (ai)_v2.wav"
+    MUSIC_N = "robotpoop (ai)_v2-01.ogg"
 
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -102,6 +102,12 @@ if __name__ == "__main__":
 
     monster_list.append(lbot)
 
+    # variable for reference to deque of destroyed monsters
+    destroyed = None
+
+    # bombs
+    bomb_list = deque()
+
     # Force update display (generally handled at end of main loop below)
     update_display(update_queue)
 
@@ -134,6 +140,9 @@ if __name__ == "__main__":
                         rect.y += player.mov_unit
                         if is_collides(rect, env_obj_list, monster_list) is None:
                             player.move_down()
+            elif event.type == KEYUP and event.key == K_p:
+                # player left poop bomb!
+                bomb_list.append(player.drop_bomb(FPS))
             elif event.type == QUIT:
                 running = False
 
@@ -157,6 +166,37 @@ if __name__ == "__main__":
                 killed = True
             if type(monster) is LaserBot and (monster.shot is not None):
                 killed = True
+
+        # copy bomb list so can remove bomb's from original list when they explode (can't remove things from a deque
+        # while you are iterating it)
+        bomb_list_c = bomb_list.__copy__()
+        for bomb in bomb_list_c:
+            if not bomb.is_explode():
+                bomb.render(screen, update_queue)
+            else:
+                # remove from screen
+                background.render(screen, update_queue, bomb.rect.copy())
+
+                bomb_list.remove(bomb)
+                bomb_mess, destroyed = bomb.explode(monster_list)
+                bomb_mess.render(screen, update_queue)
+                background.obj_list.append(bomb_mess)
+
+        # re-render any player or monster intersecting any bomb's rect so they are rendered on top
+        if is_collides(player.rect, bomb_list):
+            player.render(screen, update_queue)
+        for monster in monster_list:
+            if is_collides(monster.rect, bomb_list):
+                monster.render(screen, update_queue)
+
+        # remove any destroyed monsters
+        if destroyed is not None:
+            for monster in destroyed:
+                monster_list.remove(monster)
+                # remove from screen
+                background.render(screen, update_queue, monster.rect.copy())
+
+            destroyed = None
 
         update_display(update_queue)
 
