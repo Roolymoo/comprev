@@ -192,6 +192,7 @@ if __name__ == "__main__":
         # remove any destroyed monsters
         if destroyed is not None:
             for monster in destroyed:
+                monster.on_death()
                 monster_list.remove(monster)
                 # remove from screen
                 background.render(screen, update_queue, monster.rect.copy())

@@ -1,4 +1,6 @@
-from pygame import Rect, draw
+import os.path
+
+from pygame import Rect, draw, mixer
 
 from collision import is_collides
 
@@ -76,6 +78,7 @@ class CaptureBot:
     def __init__(self, x, y, size):
         self.rect = Rect(x, y, size, size)
         self.img = None
+        self.noise = mixer.Sound(os.path.join("sounds", "explosion_hard1.wav"))
         self.mov_unit = int(size / 25)
         # Most recently collided into object
         self.adj_obj = None
@@ -107,6 +110,9 @@ class CaptureBot:
         screen.blit(self.img, self.rect)
 
         update_queue.append(self.rect)
+
+    def on_death(self):
+        self.noise.play()
 
 
 class LaserBot(CaptureBot):
