@@ -3,6 +3,7 @@ import os.path
 from pygame import Rect, draw, mixer
 
 from collision import is_collides
+from img import load_img
 
 
 def _move(bot, dir, *args):
@@ -72,6 +73,17 @@ def _is_clear_shot(lbot, dir, player, *args):
             return True
 
 
+class BotMess:
+    def __init__(self, rect):
+        self.rect = rect
+        self.img = load_img("remains.png")
+
+    def render(self, screen, update_queue):
+        screen.blit(self.img, self.rect)
+
+        update_queue.append(self.rect)
+
+
 class CaptureBot:
     """Tries to contact (capture) player (be in within 0 pixels in some direction from player)."""
 
@@ -113,6 +125,8 @@ class CaptureBot:
 
     def on_death(self):
         self.noise.play()
+
+        return BotMess(self.rect.copy())
 
 
 class LaserBot(CaptureBot):
