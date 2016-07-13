@@ -76,6 +76,7 @@ if __name__ == "__main__":
     player.img = load_img(PLAYER_N)
     player.render(screen, update_queue)
 
+    # level (inspired from http://cdn2.business2community.com/wp-content/uploads/2012/10/Officelayout-600x386.jpg)
     # bottom
     cub = Obj(2 * TILE_SIZE, 9 * TILE_SIZE, 100, 150)
     cub.img = transform.rotate(transform.flip(load_img(CUB_MED_N), False, True), 90)
