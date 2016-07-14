@@ -1,0 +1,29 @@
+# bottom
+type=obj img=cubicle_med.png x=2 y=9 w=2 h=3 flip=(false,true) rotate=90
+type=obj img=cubicle_med.png x=4 y=10 w=3 h=2 flip=(false,true)
+type=obj img=cubicle_med_computer_happy.png x=7 y=10 w=3 h=2 flip=(false,true)
+type=obj img=cubicle_med.png x=10 y=10 w=3 h=2 flip=(false,true)
+type=obj img=cubicle_med_computer_happy.png x=13 y=10 w=3 h=2 flip=(false,true)
+type=obj img=garbage_can.png x=16 y=11 w=1 h=1
+type=obj img=garbage_can.png x=4 y=9 w=1 h=1
+type=cbot img=computer_happy.png x=1 y=10 w=1 h=1
+# top-left
+type=obj img=cubicle_med_computer_happy.png x=3 y=1 w=2 h=3 flip=(false,true) rotate=90
+type=obj img=cubicle_med.png x=2 y=4 w=3 h=2
+type=obj img=cubicle_med.png x=5 y=4 w=2 h=3 flip=(false,true) rotate=-90
+type=obj img=cubicle_med.png x=5 y=2 w=3 h=2 flip=(false,true)
+type=obj img=garbage_can.png x=4 y=6 w=1 h=1
+type=lbot img=computer_sad.png x=3 y=6 w=1 h=1
+type=lbot img=computer_sad.png x=6 y=1 w=1 h=1
+# top-middle
+type=obj img=cubicle_med_computer_happy.png x=9 y=2 w=3 h=2 flip=(false,true)
+type=obj img=cubicle_med.png x=10 y=4 w=2 h=3 rotate=-90
+type=obj img=cubicle_med_computer_happy.png x=12 y=4 w=3 h=2
+type=obj img=cubicle_med.png x=12 y=1 w=2 h=3 flip=(false,true) rotate=-90
+type=obj img=garbage_can.png x=12 y=6 w=1 h=1
+# top-right
+type=obj img=cubicle_med.png x=16 y=0 w=2 h=3 flip=(false,true) rotate=-90
+type=obj img=garbage_can.png x=17 y=3 w=1 h=1
+# right-middle
+type=obj img=cubicle_med.png x=17 y=5 w=3 h=2 flip=(false,true)
+type=cbot img=computer_happy.png x=18 y=4 w=1 h=1
