@@ -87,11 +87,11 @@ class BotMess:
 class CaptureBot:
     """Tries to contact (capture) player (be in within 0 pixels in some direction from player)."""
 
-    def __init__(self, x, y, size):
-        self.rect = Rect(x, y, size, size)
+    def __init__(self, x, y, w, h):
+        self.rect = Rect(x, y, w, h)
         self.img = None
         self.noise = mixer.Sound(os.path.join("sounds", "explosion_hard1.wav"))
-        self.mov_unit = int(size / 25)
+        self.mov_unit = int(w / 25)
         # Most recently collided into object
         self.adj_obj = None
 
@@ -130,8 +130,8 @@ class CaptureBot:
 
 
 class LaserBot(CaptureBot):
-    def __init__(self, x, y, size):
-        CaptureBot.__init__(self, x, y, size)
+    def __init__(self, x, y, w, h):
+        CaptureBot.__init__(self, x, y, w, h)
         # Contains rect that is shot if a shot can be made
         self.shot = None
 

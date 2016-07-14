@@ -8,7 +8,7 @@ from pygame import time, transform
 from render import update_display
 from player import Player
 from background import Background
-from obj import Obj
+from level import load_level
 from img import load_img
 from collision import is_collides
 from monsters import CaptureBot, LaserBot
@@ -50,6 +50,7 @@ if __name__ == "__main__":
     COMP_HAP_N = "computer_happy.png"
     CUB_MED_N = "cubicle_med.png"
     CUB_MED_COM_N = "cubicle_med_computer_happy.png"
+    LEVEL1_N = "level1.txt"
 
     # music
     MUSIC_DIR = "music"
@@ -76,131 +77,8 @@ if __name__ == "__main__":
     player.img = load_img(PLAYER_N)
     player.render(screen, update_queue)
 
-    # level (inspired from http://cdn2.business2community.com/wp-content/uploads/2012/10/Officelayout-600x386.jpg)
-    # bottom
-    cub = Obj(2 * TILE_SIZE, 9 * TILE_SIZE, 100, 150)
-    cub.img = transform.rotate(transform.flip(load_img(CUB_MED_N), False, True), 90)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cub = Obj(4 * TILE_SIZE, 10 * TILE_SIZE, 150, 100)
-    cub.img = transform.flip(load_img(CUB_MED_N), False, True)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cub = Obj(7 * TILE_SIZE, 10 * TILE_SIZE, 150, 100)
-    cub.img = transform.flip(load_img(CUB_MED_COM_N), False, True)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cub = Obj(10 * TILE_SIZE, 10 * TILE_SIZE, 150, 100)
-    cub.img = transform.flip(load_img(CUB_MED_N), False, True)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cub = Obj(13 * TILE_SIZE, 10 * TILE_SIZE, 150, 100)
-    cub.img = transform.flip(load_img(CUB_MED_COM_N), False, True)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    gbg_can = Obj(16 * TILE_SIZE, 11 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-    gbg_can.img = load_img(GBG_CAN_N)
-    gbg_can.render(screen, update_queue)
-    env_obj_list.append(gbg_can)
-
-    gbg_can = Obj(4 * TILE_SIZE, 9 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-    gbg_can.img = load_img(GBG_CAN_N)
-    gbg_can.render(screen, update_queue)
-    env_obj_list.append(gbg_can)
-
-    cbot = CaptureBot(TILE_SIZE, 10 * TILE_SIZE, TILE_SIZE)
-    cbot.img = load_img(COMP_HAP_N)
-    cbot.render(screen, update_queue)
-    monster_list.append(cbot)
-
-    # top-left
-    cub = Obj(3 * TILE_SIZE, TILE_SIZE, 100, 150)
-    cub.img = transform.rotate(transform.flip(load_img(CUB_MED_COM_N), False, True), 90)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cub = Obj(2 * TILE_SIZE, 4 * TILE_SIZE, 150, 100)
-    cub.img = load_img(CUB_MED_N)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cub = Obj(5 * TILE_SIZE, 4 * TILE_SIZE, 100, 150)
-    cub.img = transform.rotate(transform.flip(load_img(CUB_MED_N), False, True), -90)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cub = Obj(5 * TILE_SIZE, 2 * TILE_SIZE, 150, 100)
-    cub.img = transform.flip(load_img(CUB_MED_N), False, True)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    gbg_can = Obj(4 * TILE_SIZE, 6 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-    gbg_can.img = load_img(GBG_CAN_N)
-    gbg_can.render(screen, update_queue)
-    env_obj_list.append(gbg_can)
-
-    lbot = LaserBot(3 * TILE_SIZE, 6 * TILE_SIZE, TILE_SIZE)
-    lbot.img = load_img(COMP_SAD_N)
-    lbot.render(screen, update_queue)
-    monster_list.append(lbot)
-
-    lbot = LaserBot(6 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-    lbot.img = load_img(COMP_SAD_N)
-    lbot.render(screen, update_queue)
-    monster_list.append(lbot)
-
-    # top-middle
-    cub = Obj(9 * TILE_SIZE, 2 * TILE_SIZE, 150, 100)
-    cub.img = transform.flip(load_img(CUB_MED_COM_N), False, True)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cub = Obj(10 * TILE_SIZE, 4 * TILE_SIZE, 100, 150)
-    cub.img = transform.rotate(load_img(CUB_MED_N), -90)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cub = Obj(12 * TILE_SIZE, 4 * TILE_SIZE, 150, 100)
-    cub.img = load_img(CUB_MED_COM_N)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cub = Obj(12 * TILE_SIZE, TILE_SIZE, 100, 150)
-    cub.img = transform.rotate(transform.flip(load_img(CUB_MED_N), False, True), -90)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    gbg_can = Obj(12 * TILE_SIZE, 6 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-    gbg_can.img = load_img(GBG_CAN_N)
-    gbg_can.render(screen, update_queue)
-    env_obj_list.append(gbg_can)
-
-    # top-right
-    cub = Obj(16 * TILE_SIZE, 0, 100, 150)
-    cub.img = transform.rotate(transform.flip(load_img(CUB_MED_N), False, True), -90)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    gbg_can = Obj(17 * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-    gbg_can.img = load_img(GBG_CAN_N)
-    gbg_can.render(screen, update_queue)
-    env_obj_list.append(gbg_can)
-
-    # right-middle
-    cub = Obj(17 * TILE_SIZE, 5 * TILE_SIZE, 150, 100)
-    cub.img = transform.flip(load_img(CUB_MED_N), False, True)
-    cub.render(screen, update_queue)
-    env_obj_list.append(cub)
-
-    cbot = CaptureBot(18 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE)
-    cbot.img = load_img(COMP_HAP_N)
-    cbot.render(screen, update_queue)
-    monster_list.append(cbot)
+    # load level
+    env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, screen, update_queue)
 
     # # DEBUG LEVEL
     # # draw a bunch of garbage cans (debug)

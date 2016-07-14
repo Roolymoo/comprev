@@ -1,3 +1,15 @@
+# explanation~~~~~~~~~~~~~~~
+# line's beginning with a # are ignored, intended for comments
+# each line is an object
+# separated by spaces are properties and their values: prop=val. in THESE there are to be NO spaces.
+# ~type is the class type (obj for Object, cbot for CaptureBot, etc)
+# ~img is the object's image to be loaded into it
+# ~x, y, w, h are integers. the actual coordinates of the object are given by, e.g., tile_size * x. So e.g. instead of
+# giving x=1000, one gives x=20 (20 * 50 = 1000). I thought this simplified things
+# ~flip allows a flip transformation of the image. see pygame doc for transformation.flip
+# ~rotate similar to flip. you can use negative integers
+# ~~~~~~~~~~~~~~~~
+# level (inspired from http://cdn2.business2community.com/wp-content/uploads/2012/10/Officelayout-600x386.jpg)
 # bottom
 type=obj img=cubicle_med.png x=2 y=9 w=2 h=3 flip=(false,true) rotate=90
 type=obj img=cubicle_med.png x=4 y=10 w=3 h=2 flip=(false,true)
