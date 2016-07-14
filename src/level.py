@@ -5,6 +5,7 @@ from pygame import transform
 from obj import Obj
 from monsters import CaptureBot, LaserBot
 from img import load_img
+from player import Player
 
 
 def _get_dict():
@@ -12,9 +13,10 @@ def _get_dict():
     return {"type": None, "img": None, "x": None, "y": None, "w": None, "h": None, "flip": None, "rotate": None}
 
 
-def load_level(level, tile_size, screen, update_queue):
-    """Categorizes all items in level as env_obj's or monsters. Initializes them and renders them. Returns env_obj_list,
-    monster_list. Levels are permitted to have lines beginning with # to indicate a comment which will be ignored."""
+def load_level(level, tile_size, window_width, window_height, screen, update_queue):
+    """Categorizes all items in level as env_obj's or monsters or player. Initializes them and renders them. Returns
+    player, env_obj_list, monster_list. Levels are permitted to have lines beginning with # to indicate a comment which
+    will be ignored."""
     env_obj_list = deque()
     monster_list = deque()
     with open(level) as file:
@@ -42,6 +44,10 @@ def load_level(level, tile_size, screen, update_queue):
                 obj = LaserBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
                                tile_size * int(data["h"]))
                 monster_list.append(obj)
+            elif data["type"] == "player":
+                obj = Player(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
+                             tile_size * int(data["h"]), window_width, window_height)
+                player = obj
 
             obj.img = load_img(data["img"])
 
@@ -65,4 +71,4 @@ def load_level(level, tile_size, screen, update_queue):
 
             line = file.readline()
 
-    return env_obj_list, monster_list
+    return player, env_obj_list, monster_list

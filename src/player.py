@@ -4,12 +4,12 @@ from bomb import Bomb
 
 
 class Player:
-    def __init__(self, x, y, bond_x, bond_y, size):
+    def __init__(self, x, y, w, h, bond_x, bond_y):
         # rect contains player
-        self.rect = Rect(x, y, size, size)
+        self.rect = Rect(x, y, w, h)
         self.bond_x = bond_x - self.rect.w
         self.bond_y = bond_y - self.rect.h
-        self.mov_unit = int(size / 5)
+        self.mov_unit = int(w / 5)
         self.img = None
 
     def move_left(self):

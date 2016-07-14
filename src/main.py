@@ -71,14 +71,8 @@ if __name__ == "__main__":
     background = Background(WINDOW_WIDTH, WINDOW_HEIGHT, GREY)
     background.render(screen, update_queue)
 
-    # Draw player
-    player = Player(WINDOW_WIDTH - TILE_SIZE, WINDOW_HEIGHT - TILE_SIZE, WINDOW_WIDTH,
-                    WINDOW_HEIGHT, TILE_SIZE)
-    player.img = load_img(PLAYER_N)
-    player.render(screen, update_queue)
-
     # load level
-    env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, screen, update_queue)
+    player, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, screen, update_queue)
 
     # # DEBUG LEVEL
     # # draw a bunch of garbage cans (debug)
