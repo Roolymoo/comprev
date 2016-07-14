@@ -10,6 +10,9 @@ class Background:
         # objs that become part of background (eg messes from bombs)
         self.obj_list = deque()
 
+    def reset(self):
+        self.obj_list.clear()
+
     def render(self, screen, update_queue, rect=None):
         if rect is None:
             draw.rect(screen, self.colour, self.rect)

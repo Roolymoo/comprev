@@ -211,6 +211,7 @@ if __name__ == "__main__":
         if player.rect.colliderect(portal.rect) and len(monster_list) == 0:
             time.wait(2000)
             # reset environment
+            background.reset()
             background.render(screen, update_queue)
             player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, screen, update_queue)
 
