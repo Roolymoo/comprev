@@ -14,8 +14,8 @@ def _get_dict():
 
 
 def load_level(level, tile_size, window_width, window_height, screen, update_queue):
-    """Categorizes all items in level as env_obj's or monsters or player. Initializes them and renders them. Returns
-    player, env_obj_list, monster_list. Levels are permitted to have lines beginning with # to indicate a comment which
+    """Categorizes all items in level as env_obj's, monsters, player, or portal. Initializes them and renders them. Returns
+    player, portal, env_obj_list, monster_list. Levels are permitted to have lines beginning with # to indicate a comment which
     will be ignored."""
     env_obj_list = deque()
     monster_list = deque()
@@ -48,9 +48,13 @@ def load_level(level, tile_size, window_width, window_height, screen, update_que
                 obj = Player(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
                              tile_size * int(data["h"]), window_width, window_height)
                 player = obj
+            elif data["type"] == "portal":
+                obj = Obj(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
+                          tile_size * int(data["h"]))
+                portal = obj
 
-            obj.img = load_img(data["img"])
-
+            if data["img"]:
+                obj.img = load_img(data["img"])
             if data["flip"]:
                 horiz, vert = None, None
                 args = data["flip"].strip("()").split(",")
@@ -67,8 +71,9 @@ def load_level(level, tile_size, window_width, window_height, screen, update_que
             if data["rotate"]:
                 obj.img = transform.rotate(obj.img, int(data["rotate"].split("=")[-1]))
 
-            obj.render(screen, update_queue)
+            if obj.img:
+                obj.render(screen, update_queue)
 
             line = file.readline()
 
-    return player, env_obj_list, monster_list
+    return player, portal, env_obj_list, monster_list

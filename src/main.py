@@ -72,7 +72,8 @@ if __name__ == "__main__":
     background.render(screen, update_queue)
 
     # load level
-    player, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, screen, update_queue)
+    # portal is rect of where the player has to get to after killing all computer's to advance to next level
+    player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, screen, update_queue)
 
     # # DEBUG LEVEL
     # # draw a bunch of garbage cans (debug)
@@ -205,6 +206,13 @@ if __name__ == "__main__":
                 background.render(screen, update_queue, monster.rect.copy())
 
             destroyed = None
+
+        # check if player advanced to next level (at portal and killed all bots)
+        if player.rect.colliderect(portal.rect) and len(monster_list) == 0:
+            time.wait(2000)
+            # reset environment
+            background.render(screen, update_queue)
+            player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, screen, update_queue)
 
         update_display(update_queue)
 
