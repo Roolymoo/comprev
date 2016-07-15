@@ -4,6 +4,7 @@ import os.path
 import pygame
 from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p
 from pygame import time, transform
+from img import load_img
 
 from render import update_display
 from player import Player
@@ -60,6 +61,13 @@ if __name__ == "__main__":
     CUB_MED_N = "cubicle_med.png"
     CUB_MED_COM_N = "cubicle_med_computer_happy.png"
     LEVEL1_N = "level1.txt"
+    
+    # Animation Prerendered Surfaces
+    PLAYER_RIGHT_1 = load_img("man_2_right1.png")
+    PLAYER_RIGHT_2 = load_img("man_2_right2.png")
+    PLAYER_LEFT_1 = load_img("man_2_left1.png")
+    PLAYER_LEFT_2 = load_img("man_2_left2.png")
+    move_count = 0
 
     # music
     MUSIC_DIR = "music"
@@ -141,10 +149,27 @@ if __name__ == "__main__":
                         rect.x -= player.mov_unit
                         if is_collides(rect, env_obj_list, monster_list) is None:
                             player.move_left()
+                            
+                            if player.img_name != ("LEFT1" or "LEFT2"):
+                                player.update_image(PLAYER_LEFT_1, "LEFT1")
+                            elif player.img_name != ("LEFT2"):
+                                player.update_image(PLAYER_LEFT_2, "LEFT2")
+                            else:
+                                player.update_image(PLAYER_LEFT1, "LEFT1")
+                                
                     elif event.key == K_d:
                         rect.x += player.mov_unit
                         if is_collides(rect, env_obj_list, monster_list) is None:
                             player.move_right()
+                            
+                            if player.img_name != ("RIGHT1" or "RIGHT2"):
+                                player.update_image(PLAYER_RIGHT_1, "RIGHT1")
+                            elif player.img_name != ("RIGHT2"):
+                                player.update_image(PLAYER_RIGHT_2, "RIGHT2")
+                            else:
+                                player.update_image(PLAYER_RIGHT_1, "RIGHT1")                                    
+                    
+            
                     elif event.key == K_w:
                         rect.y -= player.mov_unit
                         if is_collides(rect, env_obj_list, monster_list) is None:
