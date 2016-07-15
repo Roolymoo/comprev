@@ -96,25 +96,20 @@ class CaptureBot:
         self.adj_obj = None
 
     def move(self, player, *args):
-        """args is a collection of iterables each containing objects. Moves closer to player's
-        current location."""
+        """args is a collection of iterables each containing objects. Moves closer to rect (for Capture bot it is Player)."""
         p_x = player.rect.x
         p_y = player.rect.y
         b_x = self.rect.x
         b_y = self.rect.y
 
         if p_x < b_x:
-            if _move(self, "left", [player], *args):
-                return
+            _move(self, "left", [player], *args)
         if p_x > b_x:
-            if _move(self, "right", [player], *args):
-                return
+            _move(self, "right", [player], *args)
         if p_y < b_y:
-            if _move(self, "up", [player], *args):
-                return
+            _move(self, "up", [player], *args)
         if p_y > b_y:
-            if _move(self, "down", [player], *args):
-                return
+            _move(self, "down", [player], *args)
 
         # doesn't move if it can't get closer to player
 
@@ -169,3 +164,32 @@ class LaserBot(CaptureBot):
 
         update_queue.append(self.rect)
         update_queue.append(self.shot)
+
+
+class PatrolBot(CaptureBot):
+    def __init__(self, x, y, w, h, rect_list):
+        CaptureBot.__init__(self, x, y, w, h)
+        # path always starts with self's rect
+        self.path = [self.rect] + rect_list
+        # current rect in path heading to
+        self.i = 0
+
+    def move(self, *args):
+        """loops path."""
+        p_x = self.path[self.i].x
+        p_y = self.path[self.i].y
+        b_x = self.rect.x
+        b_y = self.rect.y
+
+        if p_x < b_x:
+            _move(self, "left", *args)
+        if p_x > b_x:
+            _move(self, "right", *args)
+        if p_y < b_y:
+            _move(self, "up", *args)
+        if p_y > b_y:
+            _move(self, "down", *args)
+
+        if self.rect == self.path[self.i]:
+            # next rect to go to in path
+            self.i = (self.i + 1) % len(self.path)

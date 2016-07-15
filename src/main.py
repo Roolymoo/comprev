@@ -9,9 +9,18 @@ from render import update_display
 from player import Player
 from background import Background
 from level import load_level
-from img import load_img
 from collision import is_collides
-from monsters import CaptureBot, LaserBot
+from monsters import CaptureBot, LaserBot, PatrolBot
+
+
+def _is_killed_all(monster_list):
+    """does not count PatrolBots."""
+    count = 0
+    for monster in monster_list:
+        if type(monster) is not PatrolBot:
+            count += 1
+
+    return count == 0
 
 
 if __name__ == "__main__":
@@ -161,12 +170,17 @@ if __name__ == "__main__":
             monster_list_copy = monster_list.__copy__()
             monster_list_copy.remove(monster)
 
-            monster.move(player, env_obj_list, monster_list_copy)
+            if type(monster) is PatrolBot:
+                monster.move([player], env_obj_list, monster_list_copy)
+            elif type(monster) is CaptureBot:
+                monster.move(player, env_obj_list, monster_list_copy)
+            elif type(monster) is LaserBot:
+                monster.move(player, env_obj_list, monster_list_copy)
 
             monster.render(screen, update_queue)
 
             # Check if player died
-            if type(monster) is CaptureBot and isinstance(monster.adj_obj, Player):
+            if ((type(monster) is CaptureBot) or (type(monster) is PatrolBot)) and type(monster.adj_obj) is Player:
                 killed = True
             if type(monster) is LaserBot and (monster.shot is not None):
                 killed = True
@@ -208,7 +222,7 @@ if __name__ == "__main__":
             destroyed = None
 
         # check if player advanced to next level (at portal and killed all bots)
-        if player.rect.colliderect(portal.rect) and len(monster_list) == 0:
+        if player.rect.colliderect(portal.rect) and _is_killed_all(monster_list):
             time.wait(2000)
             # reset environment
             background.reset()

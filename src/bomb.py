@@ -4,6 +4,7 @@ import os.path
 from pygame import Rect, time, mixer
 
 from img import load_img
+from monsters import PatrolBot
 
 
 class BombMess:
@@ -44,7 +45,7 @@ class Bomb:
         collis_rect = Rect(x - w, y - h, 3 * w, 3 * h)
         destroyed = deque()
         for monster in monster_list:
-            if monster.rect.colliderect(collis_rect):
+            if monster.rect.colliderect(collis_rect) and type(monster) is not PatrolBot:
                 destroyed.append(monster)
 
         self.noise.play()

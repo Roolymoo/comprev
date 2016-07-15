@@ -15,8 +15,9 @@ def is_collides(rect, *args):
     with if that occurs, otherwise returns None."""
     for obj_col in args:
         for obj in obj_col:
-            if isinstance(obj, Rect) and rect.colliderect(obj):
-                return obj
+            if type(obj) == Rect:
+                if rect.colliderect(obj):
+                    return obj
             elif rect.colliderect(obj.rect):
                 return obj
 

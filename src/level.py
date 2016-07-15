@@ -1,9 +1,9 @@
 from collections import deque
 
-from pygame import transform
+from pygame import transform, Rect
 
 from obj import Obj, Portal
-from monsters import CaptureBot, LaserBot
+from monsters import CaptureBot, LaserBot, PatrolBot
 from img import load_img
 from player import Player
 
@@ -11,6 +11,15 @@ from player import Player
 def _get_dict():
     """Used for parsing levels."""
     return {"type": None, "img": None, "x": None, "y": None, "w": None, "h": None, "flip": None, "rotate": None}
+
+
+def _parse_path(path_raw, tile_size):
+    path = []
+    for rect_raw in path_raw.strip("[]").split("."):
+        if rect_raw:
+            path.append(Rect([tile_size * int(x) for x in rect_raw.strip("()").split(",")]))
+
+    return path
 
 
 def load_level(level, tile_size, window_width, window_height, background, screen, update_queue):
@@ -43,6 +52,10 @@ def load_level(level, tile_size, window_width, window_height, background, screen
             elif data["type"] == "lbot":
                 obj = LaserBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
                                tile_size * int(data["h"]))
+                monster_list.append(obj)
+            elif data["type"] == "pbot":
+                obj = PatrolBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
+                                tile_size * int(data["h"]), _parse_path(data["path"], tile_size))
                 monster_list.append(obj)
             elif data["type"] == "player":
                 obj = Player(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
