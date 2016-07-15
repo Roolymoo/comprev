@@ -10,7 +10,6 @@
 # ~rotate similar to flip. you can use negative integers
 # ~~~~~~~~~~~~~~~~
 # inspired from http://cdn2.business2community.com/wp-content/uploads/2012/10/Officelayout-600x386.jpg
-# TODO imgs for portals. but they will have to be loaded as background objects. need to add this to load_level and here
 type=player img=man_2.png x=19 y=13 w=1 h=1
 type=portal img=portal2.png x=0 y=0 w=1 h=1
 type=bkgrd img=portal1.png x=19 y=13 w=1 h=1

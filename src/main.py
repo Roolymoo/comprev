@@ -45,6 +45,8 @@ if __name__ == "__main__":
 
     TILE_SIZE = 50
 
+    BOMB_LIMIT = 3
+
     # Mouse button codes (pygame specific)
     LEFT_MB = 1
 
@@ -61,6 +63,7 @@ if __name__ == "__main__":
     CUB_MED_N = "cubicle_med.png"
     CUB_MED_COM_N = "cubicle_med_computer_happy.png"
     LEVEL1_N = "level1.txt"
+    BOSS_LEVEL_N = "boss_level.txt"
     
     # Animation Prerendered Surfaces
     PLAYER_RIGHT_1 = load_img("man_2_right1.png")
@@ -90,7 +93,8 @@ if __name__ == "__main__":
 
     # load level
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
-    player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+    # player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+    player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", BOSS_LEVEL_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
 
     # # DEBUG LEVEL
     # # draw a bunch of garbage cans (debug)
@@ -127,6 +131,7 @@ if __name__ == "__main__":
     destroyed = None
 
     # bombs
+    bomb_ctr = 0
     bomb_list = deque()
 
     # Force update display (generally handled at end of main loop below)
@@ -180,7 +185,9 @@ if __name__ == "__main__":
                             player.move_down()
             elif event.type == KEYUP and event.key == K_p:
                 # player left poop bomb!
-                bomb_list.append(player.drop_bomb(FPS))
+                if bomb_ctr < BOMB_LIMIT:
+                    bomb_list.append(player.drop_bomb(FPS))
+                    bomb_ctr += 1
             elif event.type == QUIT:
                 running = False
 
@@ -221,6 +228,7 @@ if __name__ == "__main__":
                 background.render(screen, update_queue, bomb.rect.copy())
 
                 bomb_list.remove(bomb)
+                bomb_ctr -= 1
                 bomb_mess, destroyed = bomb.explode(monster_list)
                 bomb_mess.render(screen, update_queue)
                 background.obj_list.append(bomb_mess)
@@ -247,7 +255,7 @@ if __name__ == "__main__":
             destroyed = None
 
         # check if player advanced to next level (at portal and killed all bots)
-        if player.rect.colliderect(portal.rect) and _is_killed_all(monster_list):
+        if portal and player.rect.colliderect(portal.rect) and _is_killed_all(monster_list):
             time.wait(2000)
             # reset environment
             background.reset()

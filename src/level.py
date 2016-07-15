@@ -28,6 +28,7 @@ def load_level(level, tile_size, window_width, window_height, background, screen
     will be ignored."""
     env_obj_list = deque()
     monster_list = deque()
+    portal = None
     with open(level) as file:
         line = file.readline()
         while line:
