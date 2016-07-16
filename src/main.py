@@ -93,8 +93,8 @@ if __name__ == "__main__":
 
     # load level
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
-    # player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
-    player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", BOSS_LEVEL_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+    player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+    # player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", BOSS_LEVEL_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
 
     # # DEBUG LEVEL
     # # draw a bunch of garbage cans (debug)
