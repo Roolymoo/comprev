@@ -37,8 +37,8 @@ def _is_clear_shot(lbot, dir, player, *args):
     lb_x, lb_y, lb_w, lb_h = lbot.rect.x, lbot.rect.y, lbot.rect.w, lbot.rect.h
     incr_w = int(lb_w / 3)
     incr_h = int(lb_h / 3)
-    bond_x = player.bond_x
-    bond_y = player.bond_y
+    bond_x = player.bond_x + player.rect.w
+    bond_y = player.bond_y + player.rect.h
     if dir == "left":
         x, y, w, h = 0, lb_y + incr_h, lb_x, incr_h
     elif dir == "right":

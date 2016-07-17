@@ -160,7 +160,7 @@ if __name__ == "__main__":
                             elif player.img_name != ("LEFT2"):
                                 player.update_image(PLAYER_LEFT_2, "LEFT2")
                             else:
-                                player.update_image(PLAYER_LEFT1, "LEFT1")
+                                player.update_image(PLAYER_LEFT_1, "LEFT1")
                                 
                     elif event.key == K_d:
                         rect.x += player.mov_unit
