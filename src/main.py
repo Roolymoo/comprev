@@ -64,6 +64,7 @@ if __name__ == "__main__":
     CUB_MED_COM_N = "cubicle_med_computer_happy.png"
     LEVEL1_N = "level1.txt"
     BOSS_LEVEL_N = "boss_level.txt"
+    STRT_SCRN_N = "startscreen.txt"
     
     # Animation Prerendered Surfaces
     PLAYER_RIGHT_1 = load_img("man_2_right1.png")
@@ -92,11 +93,13 @@ if __name__ == "__main__":
     background.render(screen, update_queue)
 
     # load level
+    level = STRT_SCRN_N
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
-    player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
-    # player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", BOSS_LEVEL_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+    player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", STRT_SCRN_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+
     # bad fix to make sure player renders over background objects
-    player.render(screen, update_queue)
+    if player:
+        player.render(screen, update_queue)
 
     # variable for reference to deque of destroyed monsters
     destroyed = None
@@ -117,6 +120,10 @@ if __name__ == "__main__":
 
     # for player pausing game
     pause = False
+
+    if level == STRT_SCRN_N:
+        # prevent certain unwanted processes for running
+        pause = True
 
     while running and (not killed):
         for event in pygame.event.get():
@@ -168,7 +175,7 @@ if __name__ == "__main__":
                     if bomb_ctr < BOMB_LIMIT:
                         bomb_list.append(player.drop_bomb(FPS))
                         bomb_ctr += 1
-                elif event.key == K_ESCAPE:
+                elif event.key == K_ESCAPE and not (level == STRT_SCRN_N):
                     # toggle
                     pause = not pause
                     if music_pause:

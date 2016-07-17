@@ -1,6 +1,7 @@
 from collections import deque
+import os.path
 
-from pygame import transform, Rect
+from pygame import transform, Rect, font
 
 from obj import Obj, Portal
 from monsters import CaptureBot, LaserBot, PatrolBot
@@ -10,7 +11,8 @@ from player import Player
 
 def _get_dict():
     """Used for parsing levels."""
-    return {"type": None, "img": None, "x": None, "y": None, "w": None, "h": None, "flip": None, "rotate": None}
+    return {"type": None, "img": None, "x": None, "y": None, "w": None, "h": None, "flip": None, "rotate": None,
+            "scale": None}
 
 
 def _parse_path(path_raw, tile_size):
@@ -29,6 +31,7 @@ def load_level(level, tile_size, window_width, window_height, background, screen
     env_obj_list = deque()
     monster_list = deque()
     portal = None
+    player = None
     with open(level) as file:
         line = file.readline()
         while line:
@@ -71,6 +74,12 @@ def load_level(level, tile_size, window_width, window_height, background, screen
                 obj = Obj(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
                           tile_size * int(data["h"]))
                 background.obj_list.append(obj)
+            elif data["type"] == "txt":
+                obj = Obj(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
+                          tile_size * int(data["h"]))
+                text = data["txt"].replace("^", " ")
+                obj.img = font.Font(os.path.join("fonts", "data-latin.ttf"), int(0.7 * tile_size * int(data["h"]))).render(text, True, (0, 0, 0))
+                background.obj_list.append(obj)
 
             if data["img"]:
                 obj.img = load_img(data["img"])
@@ -89,6 +98,8 @@ def load_level(level, tile_size, window_width, window_height, background, screen
                 obj.img = transform.flip(obj.img, horiz, vert)
             if data["rotate"]:
                 obj.img = transform.rotate(obj.img, int(data["rotate"].split("=")[-1]))
+            if data["scale"]:
+                obj.img = transform.scale(obj.img, tuple(tile_size * int(i) for i in data["scale"].strip("()").split(",")))
 
             if obj.img:
                 obj.render(screen, update_queue)
