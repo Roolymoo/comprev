@@ -46,7 +46,7 @@ type=obj img=chair.png x=13 y=6 w=1 h=1
 type=obj img=chair.png x=14 y=2 w=1 h=1
 type=obj img=chair.png x=10 y=1 w=1 h=1
 # center
-type=obj img=plant2.png x=10 y=8 w=1 h=1
+type=obj img=plant.png x=10 y=8 w=1 h=1
 # top-right
 type=obj img=cubicle_med.png x=16 y=0 w=2 h=3 flip=(false,true) rotate=-90
 type=obj img=garbage_can.png x=17 y=3 w=1 h=1

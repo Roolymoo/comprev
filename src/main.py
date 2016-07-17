@@ -2,7 +2,7 @@ from collections import deque
 import os.path
 
 import pygame
-from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p
+from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p, K_ESCAPE
 from pygame import time, transform
 from img import load_img
 
@@ -95,37 +95,8 @@ if __name__ == "__main__":
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
     # player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", BOSS_LEVEL_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
-
-    # # DEBUG LEVEL
-    # # draw a bunch of garbage cans (debug)
-    # x_coord = TILE_SIZE * 3
-    # while x_coord < TILE_SIZE * 10:
-    #     y_coord = TILE_SIZE * 3
-    #     while y_coord < WINDOW_HEIGHT:
-    #         gbg_can = Obj(x_coord, y_coord, TILE_SIZE, TILE_SIZE)
-    #         gbg_can.img = load_img(GBG_CAN_N)
-    #         gbg_can.render(screen, update_queue)
-    #
-    #         env_obj_list.append(gbg_can)
-    #
-    #         y_coord += TILE_SIZE * 2
-    #
-    #     x_coord += TILE_SIZE * 2
-    #
-    #
-    # # create a capture bot (debug)
-    # cbot = CaptureBot(WINDOW_WIDTH - TILE_SIZE, WINDOW_HEIGHT - TILE_SIZE, TILE_SIZE)
-    # cbot.img = load_img(COMP_HAP_N)
-    # cbot.render(screen, update_queue)
-    #
-    # monster_list.append(cbot)
-    #
-    # # create a laser bot (debug)
-    # lbot = LaserBot(WINDOW_WIDTH - TILE_SIZE, TILE_SIZE * 3, TILE_SIZE)
-    # lbot.img = load_img(COMP_SAD_N)
-    # lbot.render(screen, update_queue)
-    #
-    # monster_list.append(lbot)
+    # bad fix to make sure player renders over background objects
+    player.render(screen, update_queue)
 
     # variable for reference to deque of destroyed monsters
     destroyed = None
@@ -141,11 +112,16 @@ if __name__ == "__main__":
     pygame.mixer.music.load(os.path.join(MUSIC_DIR, MUSIC_N))
     # play indefinitely
     pygame.mixer.music.play(-1)
+    # need variable, seems API get_busy doesn't consider paused as not busy
+    music_pause = False
+
+    # for player pausing game
+    pause = False
 
     while running and (not killed):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                if event.key in (K_a, K_d, K_w, K_s):
+                if event.key in (K_a, K_d, K_w, K_s) and not pause:
                     # player to be moved, clear old location
                     background.render(screen, update_queue, player.rect.copy())
 
@@ -183,88 +159,100 @@ if __name__ == "__main__":
                         rect.y += player.mov_unit
                         if is_collides(rect, env_obj_list, monster_list) is None:
                             player.move_down()
-            elif event.type == KEYUP and event.key == K_p:
-                # player left poop bomb!
-                if bomb_ctr < BOMB_LIMIT:
-                    bomb_list.append(player.drop_bomb(FPS))
-                    bomb_ctr += 1
+
+                    player.render(screen, update_queue)
+
+            elif event.type == KEYUP:
+                if event.key == K_p and not pause:
+                    # player left poop bomb!
+                    if bomb_ctr < BOMB_LIMIT:
+                        bomb_list.append(player.drop_bomb(FPS))
+                        bomb_ctr += 1
+                elif event.key == K_ESCAPE:
+                    # toggle
+                    pause = not pause
+                    if music_pause:
+                        pygame.mixer.music.unpause()
+                        music_pause = False
+                    else:
+                        pygame.mixer.music.pause()
+                        music_pause = True
             elif event.type == QUIT:
                 running = False
 
-            player.render(screen, update_queue)
-
-        # monster ai
-        for monster in monster_list:
-            # clear old location
-            background.render(screen, update_queue, monster.rect.copy())
-
-            # remove this monster from general list when checking collisions
-            monster_list_copy = monster_list.__copy__()
-            monster_list_copy.remove(monster)
-
-            if type(monster) is PatrolBot:
-                monster.move([player], env_obj_list, monster_list_copy)
-            elif type(monster) is CaptureBot:
-                monster.move(player, env_obj_list, monster_list_copy)
-            elif type(monster) is LaserBot:
-                monster.move(player, env_obj_list, monster_list_copy)
-
-            monster.render(screen, update_queue)
-
-            # Check if player died
-            if ((type(monster) is CaptureBot) or (type(monster) is PatrolBot)) and type(monster.adj_obj) is Player:
-                killed = True
-            if type(monster) is LaserBot and (monster.shot is not None):
-                killed = True
-
-        # copy bomb list so can remove bomb's from original list when they explode (can't remove things from a deque
-        # while you are iterating it)
-        bomb_list_c = bomb_list.__copy__()
-        for bomb in bomb_list_c:
-            if not bomb.is_explode():
-                bomb.render(screen, update_queue)
-            else:
-                # remove from screen
-                background.render(screen, update_queue, bomb.rect.copy())
-
-                bomb_list.remove(bomb)
-                bomb_ctr -= 1
-                bomb_mess, destroyed = bomb.explode(monster_list)
-                bomb_mess.render(screen, update_queue)
-                background.obj_list.append(bomb_mess)
-
-        # re-render any player or monster intersecting any bomb's rect so they are rendered on top
-        if is_collides(player.rect, bomb_list):
-            player.render(screen, update_queue)
-        for monster in monster_list:
-            if is_collides(monster.rect, bomb_list):
-                monster.render(screen, update_queue)
-
-        # remove any destroyed monsters
-        if destroyed is not None:
-            for monster in destroyed:
-                monster_mess = monster.on_death()
-                monster_mess.render(screen, update_queue)
-                background.obj_list.append(monster_mess)
-
-                monster_list.remove(monster)
-
-                # remove from screen
+        if not pause:
+            # monster ai
+            for monster in monster_list:
+                # clear old location
                 background.render(screen, update_queue, monster.rect.copy())
 
-            destroyed = None
+                # remove this monster from general list when checking collisions
+                monster_list_copy = monster_list.__copy__()
+                monster_list_copy.remove(monster)
 
-        # check if player advanced to next level (at portal and killed all bots)
-        if portal and player.rect.colliderect(portal.rect) and _is_killed_all(monster_list):
-            time.wait(2000)
-            # reset environment
-            background.reset()
-            background.render(screen, update_queue)
-            player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+                if type(monster) is PatrolBot:
+                    monster.move([player], env_obj_list, monster_list_copy)
+                elif type(monster) is CaptureBot:
+                    monster.move(player, env_obj_list, monster_list_copy)
+                elif type(monster) is LaserBot:
+                    monster.move(player, env_obj_list, monster_list_copy)
 
-        update_display(update_queue)
+                monster.render(screen, update_queue)
 
-        fps_clock.tick(FPS)
+                # Check if player died
+                if ((type(monster) is CaptureBot) or (type(monster) is PatrolBot)) and type(monster.adj_obj) is Player:
+                    killed = True
+                if type(monster) is LaserBot and (monster.shot is not None):
+                    killed = True
+
+            # copy bomb list so can remove bomb's from original list when they explode (can't remove things from a deque
+            # while you are iterating it)
+            bomb_list_c = bomb_list.__copy__()
+            for bomb in bomb_list_c:
+                if not bomb.is_explode():
+                    bomb.render(screen, update_queue)
+                else:
+                    # remove from screen
+                    background.render(screen, update_queue, bomb.rect.copy())
+
+                    bomb_list.remove(bomb)
+                    bomb_ctr -= 1
+                    bomb_mess, destroyed = bomb.explode(monster_list)
+                    bomb_mess.render(screen, update_queue)
+                    background.obj_list.append(bomb_mess)
+
+            # re-render any player or monster intersecting any bomb's rect so they are rendered on top
+            if is_collides(player.rect, bomb_list):
+                player.render(screen, update_queue)
+            for monster in monster_list:
+                if is_collides(monster.rect, bomb_list):
+                    monster.render(screen, update_queue)
+
+            # remove any destroyed monsters
+            if destroyed is not None:
+                for monster in destroyed:
+                    monster_mess = monster.on_death()
+                    monster_mess.render(screen, update_queue)
+                    background.obj_list.append(monster_mess)
+
+                    monster_list.remove(monster)
+
+                    # remove from screen
+                    background.render(screen, update_queue, monster.rect.copy())
+
+                destroyed = None
+
+            # check if player advanced to next level (at portal and killed all bots)
+            if portal and player.rect.colliderect(portal.rect) and _is_killed_all(monster_list):
+                time.wait(2000)
+                # reset environment
+                background.reset()
+                background.render(screen, update_queue)
+                player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+
+            update_display(update_queue)
+
+            fps_clock.tick(FPS)
 
     if killed:
         # freeze for a sec so player can see how they died (e.g. see laser rendered for a bit)
