@@ -2,7 +2,7 @@ from collections import deque
 import os.path
 
 import pygame
-from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p, K_ESCAPE
+from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p, K_ESCAPE, K_y, K_n
 from pygame import time, transform
 from img import load_img
 
@@ -22,6 +22,16 @@ def _is_killed_all(monster_list):
             count += 1
 
     return count == 0
+
+
+def _load_level(level):
+    background.reset()
+    background.render(screen, update_queue)
+    player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", level_dict[level]), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+    # bad fix to ensure player renders on top of any background object
+    if player:
+        player.render(screen, update_queue)
+    return player, portal, env_obj_list, monster_list
 
 
 if __name__ == "__main__":
@@ -90,16 +100,13 @@ if __name__ == "__main__":
     update_queue = deque() # Queue of rects specifying areas of display to update
 
     background = Background(WINDOW_WIDTH, WINDOW_HEIGHT, GREY)
-    background.render(screen, update_queue)
 
-    # load level
-    level = STRT_SCRN_N
+    # levels
+    level_dict = {0: STRT_SCRN_N, 1: LEVEL1_N}
+    # load start screen
+    level = 0
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
-    player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", STRT_SCRN_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
-
-    # bad fix to make sure player renders over background objects
-    if player:
-        player.render(screen, update_queue)
+    player, portal, env_obj_list, monster_list = _load_level(level)
 
     # variable for reference to deque of destroyed monsters
     destroyed = None
@@ -120,8 +127,10 @@ if __name__ == "__main__":
 
     # for player pausing game
     pause = False
+    # for toggling pause at end of main loop
+    unpause = False
 
-    if level == STRT_SCRN_N:
+    if level == 0:
         # prevent certain unwanted processes for running
         pause = True
 
@@ -175,7 +184,7 @@ if __name__ == "__main__":
                     if bomb_ctr < BOMB_LIMIT:
                         bomb_list.append(player.drop_bomb(FPS))
                         bomb_ctr += 1
-                elif event.key == K_ESCAPE and not (level == STRT_SCRN_N):
+                elif event.key == K_ESCAPE and not (level == 0):
                     # toggle
                     pause = not pause
                     if music_pause:
@@ -184,6 +193,15 @@ if __name__ == "__main__":
                     else:
                         pygame.mixer.music.pause()
                         music_pause = True
+                elif event.key == K_y and level == 0:
+                    # load next level
+                    # TODO have this terminate, right now it will get a dict access error
+                    level += 1
+                    unpause = True
+                    player, portal, env_obj_list, monster_list = _load_level(level)
+                elif event.key == K_n and level == 0:
+                    # quit game from start menu
+                    running = False
             elif event.type == QUIT:
                 running = False
 
@@ -257,9 +275,13 @@ if __name__ == "__main__":
                 background.render(screen, update_queue)
                 player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
 
-            update_display(update_queue)
+        update_display(update_queue)
 
-            fps_clock.tick(FPS)
+        fps_clock.tick(FPS)
+
+        if unpause:
+            pause = False
+            unpause = False
 
     if killed:
         # freeze for a sec so player can see how they died (e.g. see laser rendered for a bit)
