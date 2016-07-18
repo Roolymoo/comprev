@@ -3,7 +3,7 @@ import os.path
 
 import pygame
 from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p, K_ESCAPE, K_y, K_n
-from pygame import time, transform
+from pygame import time
 from img import load_img
 
 from render import update_display
@@ -11,7 +11,7 @@ from player import Player
 from background import Background
 from level import load_level
 from collision import is_collides
-from monsters import CaptureBot, LaserBot, PatrolBot
+from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot
 
 
 def _is_killed_all(monster_list):
@@ -221,11 +221,13 @@ if __name__ == "__main__":
                     monster.move(player, env_obj_list, monster_list_copy)
                 elif type(monster) is LaserBot:
                     monster.move(player, env_obj_list, monster_list_copy)
+                elif type(monster) is WaitBot:
+                    monster.move(player, env_obj_list, monster_list_copy)
 
                 monster.render(screen, update_queue)
 
                 # Check if player died
-                if ((type(monster) is CaptureBot) or (type(monster) is PatrolBot)) and type(monster.adj_obj) is Player:
+                if ((type(monster) is CaptureBot) or (type(monster) is PatrolBot) or (type(monster) is WaitBot)) and type(monster.adj_obj) is Player:
                     killed = True
                 if type(monster) is LaserBot and (monster.shot is not None):
                     killed = True

@@ -4,7 +4,7 @@ import os.path
 from pygame import transform, Rect, font
 
 from obj import Obj, Portal
-from monsters import CaptureBot, LaserBot, PatrolBot
+from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot
 from img import load_img
 from player import Player
 
@@ -60,6 +60,10 @@ def load_level(level, tile_size, window_width, window_height, background, screen
             elif data["type"] == "pbot":
                 obj = PatrolBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
                                 tile_size * int(data["h"]), _parse_path(data["path"], tile_size))
+                monster_list.append(obj)
+            elif data["type"] == "wbot":
+                obj = WaitBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
+                                 tile_size * int(data["h"]))
                 monster_list.append(obj)
             elif data["type"] == "player":
                 obj = Player(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),

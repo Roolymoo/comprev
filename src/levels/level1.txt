@@ -21,7 +21,7 @@ type=obj img=cubicle_med.png x=10 y=10 w=3 h=2 flip=(false,true)
 type=obj img=cubicle_med_computer_happy.png x=13 y=10 w=3 h=2 flip=(false,true)
 type=obj img=garbage_can.png x=16 y=11 w=1 h=1
 type=obj img=garbage_can.png x=4 y=9 w=1 h=1
-type=cbot img=chasebot.png x=1 y=10 w=1 h=1
+type=wbot img=chasebot.png x=1 y=10 w=1 h=1
 type=obj img=chair.png x=8 y=9 w=1 h=1
 type=obj img=chair.png x=1 y=9 w=1 h=1
 # top-left

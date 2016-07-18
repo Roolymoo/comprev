@@ -29,12 +29,49 @@ def _move(bot, dir, *args):
         return False
 
 
+def _is_in_sight(wbot, player, *args):
+    b_x, b_y, b_w, b_h = wbot.rect
+    bond_x = player.bond_x + player.rect.w
+    bond_y = player.bond_y + player.rect.h
+
+    # rect's emanating from wbot in all directions to border of screen
+    left_rect = Rect(0, b_y, b_x, b_h)
+    right_rect = Rect(b_x + b_w, b_y, bond_x - (b_x + b_w), b_h)
+    up_rect = Rect(b_x, 0, b_w, b_y)
+    down_rect = Rect(b_x, b_y + b_h, b_w, bond_y - (b_y + b_h))
+
+    # see if any of these rect's intersect with player without colliding with anything in-between
+    for rect in (left_rect, right_rect, up_rect, down_rect):
+        if rect.colliderect(player.rect):
+            # hit player, modify rect to extend only to player
+            p_x, p_y, p_w, p_h = player.rect
+            if rect == left_rect:
+                rect.x = p_x + p_w
+                rect.w -= p_x + p_w
+            elif rect == right_rect:
+                rect.w -= bond_x - p_x
+            elif rect == up_rect:
+                rect.y = p_y + p_h
+                rect.h -= p_y + p_h
+            elif rect == down_rect:
+                rect.h -= bond_y - p_y
+
+            if is_collides(rect, *args):
+                # obstacles in way, no good (player shouldn't be in args)
+                continue
+            else:
+                # player visible
+                return True
+
+    return False
+
+
 def _is_clear_shot(lbot, dir, player, *args):
     """Checks if there is no obstruction between lbot and player. If there isn't, a rect is
     loaded into lbot.shot for shooting phase, and True is returned. Otherwise False is
     returned."""
     # create rectangle extending from middle of lbot to edge of screen
-    lb_x, lb_y, lb_w, lb_h = lbot.rect.x, lbot.rect.y, lbot.rect.w, lbot.rect.h
+    lb_x, lb_y, lb_w, lb_h = lbot.rect
     incr_w = int(lb_w / 3)
     incr_h = int(lb_h / 3)
     bond_x = player.bond_x + player.rect.w
@@ -122,6 +159,23 @@ class CaptureBot:
         self.noise.play()
 
         return BotMess(self.rect.copy())
+
+
+class WaitBot(CaptureBot):
+    """A capture bot that waits until player is in line of sight, then functions just as a capture bot."""
+    def __init__(self, x, y, w, h):
+        CaptureBot.__init__(self, x, y, w, h)
+        # whether bot has seen player or not
+        self.sighted = False
+
+    def move(self, player, *args):
+        if not self.sighted:
+            if _is_in_sight(self, player, *args):
+                self.sighted = True
+            else:
+                return
+
+        CaptureBot.move(self, player, *args)
 
 
 class LaserBot(CaptureBot):
