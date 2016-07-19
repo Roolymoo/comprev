@@ -130,6 +130,7 @@ if __name__ == "__main__":
         pause = True
 
     while running and (not killed):
+        # music
         if level == 1 and not music_loaded:
             pygame.mixer.music.load(os.path.join(MUSIC_DIR, MUSIC_N))
             # play indefinitely
@@ -220,7 +221,7 @@ if __name__ == "__main__":
                 monster_list_copy.remove(monster)
 
                 if type(monster) is PatrolBot:
-                    monster.move([player], env_obj_list, monster_list_copy)
+                    monster.move(player, env_obj_list, monster_list_copy)
                 elif type(monster) is CaptureBot:
                     monster.move(player, env_obj_list, monster_list_copy)
                 elif type(monster) is LaserBot:

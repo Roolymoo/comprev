@@ -110,6 +110,26 @@ def _is_clear_shot(lbot, dir, player, *args):
             return True
 
 
+def _patrol(pbot, *args):
+    p_x = pbot.path[pbot.i].x
+    p_y = pbot.path[pbot.i].y
+    b_x = pbot.rect.x
+    b_y = pbot.rect.y
+
+    if p_x < b_x:
+        _move(pbot, "left", *args)
+    if p_x > b_x:
+        _move(pbot, "right", *args)
+    if p_y < b_y:
+        _move(pbot, "up", *args)
+    if p_y > b_y:
+        _move(pbot, "down", *args)
+
+    if pbot.rect == pbot.path[pbot.i]:
+        # next rect to go to in path
+        pbot.i = (pbot.i + 1) % len(pbot.path)
+
+
 class BotMess:
     def __init__(self, rect):
         self.rect = rect
@@ -220,30 +240,22 @@ class LaserBot(CaptureBot):
         update_queue.append(self.shot)
 
 
-class PatrolBot(CaptureBot):
+class PatrolBot(WaitBot):
     def __init__(self, x, y, w, h, rect_list):
-        CaptureBot.__init__(self, x, y, w, h)
+        WaitBot.__init__(self, x, y, w, h)
         # path always starts with self's rect
         self.path = [self.rect] + rect_list
         # current rect in path heading to
         self.i = 0
 
-    def move(self, *args):
-        """loops path."""
-        p_x = self.path[self.i].x
-        p_y = self.path[self.i].y
-        b_x = self.rect.x
-        b_y = self.rect.y
+    def move(self, player, *args):
+        """loops path if not sighted player, otherwise chases player."""
+        if not self.sighted:
+            if _is_in_sight(self, player, *args):
+                self.sighted = True
+            else:
+                _patrol(self, *args)
+                return
 
-        if p_x < b_x:
-            _move(self, "left", *args)
-        if p_x > b_x:
-            _move(self, "right", *args)
-        if p_y < b_y:
-            _move(self, "up", *args)
-        if p_y > b_y:
-            _move(self, "down", *args)
-
-        if self.rect == self.path[self.i]:
-            # next rect to go to in path
-            self.i = (self.i + 1) % len(self.path)
+        # sighted player, continue chase
+        CaptureBot.move(self, player, *args)

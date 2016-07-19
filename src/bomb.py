@@ -45,7 +45,7 @@ class Bomb:
         collis_rect = Rect(x - w, y - h, 3 * w, 3 * h)
         destroyed = deque()
         for monster in monster_list:
-            if monster.rect.colliderect(collis_rect) and type(monster) is not PatrolBot:
+            if monster.rect.colliderect(collis_rect):
                 destroyed.append(monster)
 
         self.noise.play()
