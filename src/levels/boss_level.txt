@@ -1,6 +1,5 @@
 type=player img=man_2.png x=9 y=13 w=1 h=1
-# TODO: make into actual monster
-type=obj img=boss_dummy.png x=8 y=4 w=4 h=4
+type=obj img=boss_smile.png x=8 y=4 w=4 h=4
 # top
 type=obj img=computer_wall3.png x=1 y=0 w=2 h=2
 type=obj img=computer_wall3.png x=3 y=0 w=2 h=2

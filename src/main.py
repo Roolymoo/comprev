@@ -75,7 +75,7 @@ if __name__ == "__main__":
     LEVEL1_N = "level1.txt"
     BOSS_LEVEL_N = "boss_level.txt"
     STRT_SCRN_N = "startscreen.txt"
-    
+
     # Animation Prerendered Surfaces
     PLAYER_RIGHT_1 = load_img("man_2_right1.png")
     PLAYER_RIGHT_2 = load_img("man_2_right2.png")
@@ -86,6 +86,7 @@ if __name__ == "__main__":
     # music
     MUSIC_DIR = "music"
     MUSIC_N = "robotpoop (ai)_v2-01.ogg"
+    MUSIC_BOSS_N = "robotpoop (boss)_v1.ogg"
 
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -102,9 +103,9 @@ if __name__ == "__main__":
     background = Background(WINDOW_WIDTH, WINDOW_HEIGHT, GREY)
 
     # levels
-    level_dict = {0: STRT_SCRN_N, 1: LEVEL1_N}
+    level_dict = {0: STRT_SCRN_N, 1: LEVEL1_N, 2: BOSS_LEVEL_N}
     # load start screen
-    level = 0
+    level = 2
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list = _load_level(level)
 
@@ -132,7 +133,25 @@ if __name__ == "__main__":
     while running and (not killed):
         # music
         if level == 1 and not music_loaded:
+
             pygame.mixer.music.load(os.path.join(MUSIC_DIR, MUSIC_N))
+
+            # play indefinitely
+            pygame.mixer.music.play(-1)
+            # need variable, seems API get_busy doesn't consider paused as not busy
+            music_pause = False
+
+            music_loaded = True
+
+        if level == 2 and not music_loaded:
+
+            # stop whatever music that is playing
+            pygame.mixer.music.stop()
+
+            # load new music
+            pygame.mixer.music.load(os.path.join(MUSIC_DIR, MUSIC_BOSS_N))
+
+
             # play indefinitely
             pygame.mixer.music.play(-1)
             # need variable, seems API get_busy doesn't consider paused as not busy
@@ -151,27 +170,27 @@ if __name__ == "__main__":
                         rect.x -= player.mov_unit
                         if is_collides(rect, env_obj_list, monster_list) is None:
                             player.move_left()
-                            
+
                             if player.img_name != ("LEFT1" or "LEFT2"):
                                 player.update_image(PLAYER_LEFT_1, "LEFT1")
                             elif player.img_name != ("LEFT2"):
                                 player.update_image(PLAYER_LEFT_2, "LEFT2")
                             else:
                                 player.update_image(PLAYER_LEFT_1, "LEFT1")
-                                
+
                     elif event.key == K_d:
                         rect.x += player.mov_unit
                         if is_collides(rect, env_obj_list, monster_list) is None:
                             player.move_right()
-                            
+
                             if player.img_name != ("RIGHT1" or "RIGHT2"):
                                 player.update_image(PLAYER_RIGHT_1, "RIGHT1")
                             elif player.img_name != ("RIGHT2"):
                                 player.update_image(PLAYER_RIGHT_2, "RIGHT2")
                             else:
-                                player.update_image(PLAYER_RIGHT_1, "RIGHT1")                                    
-                    
-            
+                                player.update_image(PLAYER_RIGHT_1, "RIGHT1")
+
+
                     elif event.key == K_w:
                         rect.y -= player.mov_unit
                         if is_collides(rect, env_obj_list, monster_list) is None:
@@ -281,6 +300,12 @@ if __name__ == "__main__":
                 background.reset()
                 background.render(screen, update_queue)
                 player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+
+                # move to the next level
+                # level += 1
+
+                # reset music shortcut
+                # music_loaded = False
 
         update_display(update_queue)
 
