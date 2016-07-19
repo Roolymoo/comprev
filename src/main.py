@@ -118,12 +118,7 @@ if __name__ == "__main__":
     # Force update display (generally handled at end of main loop below)
     update_display(update_queue)
 
-    # music!
-    pygame.mixer.music.load(os.path.join(MUSIC_DIR, MUSIC_N))
-    # play indefinitely
-    pygame.mixer.music.play(-1)
-    # need variable, seems API get_busy doesn't consider paused as not busy
-    music_pause = False
+    music_loaded = False
 
     # for player pausing game
     pause = False
@@ -135,6 +130,15 @@ if __name__ == "__main__":
         pause = True
 
     while running and (not killed):
+        if level == 1 and not music_loaded:
+            pygame.mixer.music.load(os.path.join(MUSIC_DIR, MUSIC_N))
+            # play indefinitely
+            pygame.mixer.music.play(-1)
+            # need variable, seems API get_busy doesn't consider paused as not busy
+            music_pause = False
+
+            music_loaded = True
+
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key in (K_a, K_d, K_w, K_s) and not pause:
