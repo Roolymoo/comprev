@@ -11,7 +11,7 @@ from player import Player
 from background import Background
 from level import load_level
 from collision import is_collides
-from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot
+from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot, PatrolLaserBot
 
 
 def _is_killed_all(monster_list):
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     # levels
     level_dict = {0: STRT_SCRN_N, 1: LEVEL1_N, 2: BOSS_LEVEL_N}
     # load start screen
-    level = 2
+    level = 1
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list = _load_level(level)
 
@@ -239,21 +239,14 @@ if __name__ == "__main__":
                 monster_list_copy = monster_list.__copy__()
                 monster_list_copy.remove(monster)
 
-                if type(monster) is PatrolBot:
-                    monster.move(player, env_obj_list, monster_list_copy)
-                elif type(monster) is CaptureBot:
-                    monster.move(player, env_obj_list, monster_list_copy)
-                elif type(monster) is LaserBot:
-                    monster.move(player, env_obj_list, monster_list_copy)
-                elif type(monster) is WaitBot:
-                    monster.move(player, env_obj_list, monster_list_copy)
+                monster.move(player, env_obj_list, monster_list_copy)
 
                 monster.render(screen, update_queue)
 
                 # Check if player died
-                if ((type(monster) is CaptureBot) or (type(monster) is PatrolBot) or (type(monster) is WaitBot)) and type(monster.adj_obj) is Player:
+                if type(monster) in (CaptureBot, WaitBot, PatrolBot) and type(monster.adj_obj) is Player:
                     killed = True
-                if type(monster) is LaserBot and (monster.shot is not None):
+                if type(monster) in (LaserBot, PatrolLaserBot) and (monster.shot is not None):
                     killed = True
 
             # copy bomb list so can remove bomb's from original list when they explode (can't remove things from a deque

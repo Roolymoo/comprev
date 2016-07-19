@@ -4,7 +4,7 @@ import os.path
 from pygame import transform, Rect, font
 
 from obj import Obj, Portal
-from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot
+from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot, PatrolLaserBot
 from img import load_img
 from player import Player
 
@@ -12,14 +12,19 @@ from player import Player
 def _get_dict():
     """Used for parsing levels."""
     return {"type": None, "img": None, "x": None, "y": None, "w": None, "h": None, "flip": None, "rotate": None,
-            "scale": None}
+            "scale": None, "fps": None}
 
 
 def _parse_path(path_raw, tile_size):
-    path = []
+    path = dict()
+    i = 0
     for rect_raw in path_raw.strip("[]").split("."):
-        if rect_raw:
-            path.append(Rect([tile_size * int(x) for x in rect_raw.strip("()").split(",")]))
+        _rect_raw = rect_raw.strip("()").split(",")
+        x, y, w, h = [tile_size * int(x) for x in _rect_raw[:-1]]
+        t = int(_rect_raw[-1])
+        if _rect_raw:
+            path.update({i: [Rect(x, y, w, h), t]})
+            i += 1
 
     return path
 
@@ -59,11 +64,15 @@ def load_level(level, tile_size, window_width, window_height, background, screen
                 monster_list.append(obj)
             elif data["type"] == "pbot":
                 obj = PatrolBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
-                                tile_size * int(data["h"]), _parse_path(data["path"], tile_size))
+                                tile_size * int(data["h"]), int(data["fps"]), _parse_path(data["path"], tile_size))
                 monster_list.append(obj)
             elif data["type"] == "wbot":
                 obj = WaitBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
                                  tile_size * int(data["h"]))
+                monster_list.append(obj)
+            elif data["type"] == "plbot":
+                obj = PatrolLaserBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
+                                     tile_size * int(data["h"]),  int(data["fps"]), _parse_path(data["path"], tile_size))
                 monster_list.append(obj)
             elif data["type"] == "player":
                 obj = Player(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),

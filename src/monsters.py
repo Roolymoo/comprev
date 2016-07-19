@@ -1,6 +1,6 @@
 import os.path
 
-from pygame import Rect, draw, mixer
+from pygame import Rect, draw, mixer, time
 
 from collision import is_collides
 from img import load_img
@@ -111,8 +111,8 @@ def _is_clear_shot(lbot, dir, player, *args):
 
 
 def _patrol(pbot, *args):
-    p_x = pbot.path[pbot.i].x
-    p_y = pbot.path[pbot.i].y
+    p_x = pbot.path[pbot.i][0].x
+    p_y = pbot.path[pbot.i][0].y
     b_x = pbot.rect.x
     b_y = pbot.rect.y
 
@@ -125,9 +125,13 @@ def _patrol(pbot, *args):
     if p_y > b_y:
         _move(pbot, "down", *args)
 
-    if pbot.rect == pbot.path[pbot.i]:
-        # next rect to go to in path
-        pbot.i = (pbot.i + 1) % len(pbot.path)
+    if pbot.rect == pbot.path[pbot.i][0]:
+        # reached node in path
+        if pbot.path[pbot.i][1] != 0:
+            # wait at this node in path
+            pbot.clock = time.Clock()
+        else:
+            pbot.advance()
 
 
 class BotMess:
@@ -241,21 +245,66 @@ class LaserBot(CaptureBot):
 
 
 class PatrolBot(WaitBot):
-    def __init__(self, x, y, w, h, rect_list):
+    def __init__(self, x, y, w, h, fps, path):
         WaitBot.__init__(self, x, y, w, h)
         # path always starts with self's rect
-        self.path = [self.rect] + rect_list
+        self.path = path
         # current rect in path heading to
         self.i = 0
+        # for waiting at nodes in path
+        self.time = 0
+        self.clock = None
+        self.fps = fps
+
+    def advance(self):
+        """advance node in path."""
+        self.i = (self.i + 1) % len(self.path)
 
     def move(self, player, *args):
         """loops path if not sighted player, otherwise chases player."""
         if not self.sighted:
             if _is_in_sight(self, player, *args):
                 self.sighted = True
+            elif self.clock:
+                # waiting at a node in path
+                self.time += self.clock.tick(self.fps)
+                if self.time >= self.path[self.i][1]:
+                    # ready move to next node
+                    self.clock = None
+                    self.time = 0
+                return
             else:
                 _patrol(self, *args)
                 return
 
         # sighted player, continue chase
         CaptureBot.move(self, player, *args)
+
+
+class PatrolLaserBot(PatrolBot, LaserBot):
+    def __init__(self, x, y, w, h, fps, rect_list):
+        PatrolBot.__init__(self, x, y, w, h, fps, rect_list)
+        self.shot = None
+
+    def move(self, player, *args):
+        if not self.sighted:
+            if _is_in_sight(self, player, *args):
+                self.sighted = True
+            elif self.clock:
+                # waiting at a node in path
+                self.time += self.clock.tick(self.fps)
+                if self.time >= self.path[self.i][1]:
+                    # ready move to next node
+                    self.clock = None
+                    self.time = 0
+                    self.advance()
+                return
+            else:
+                _patrol(self, *args)
+                return
+
+        # sighted player, try to zap him!
+        LaserBot.move(self, player, *args)
+
+    def render(self, screen, update_queue):
+        LaserBot.render(self, screen, update_queue)

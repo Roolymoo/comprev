@@ -31,11 +31,11 @@ type=obj img=cubicle_med.png x=5 y=4 w=2 h=3 flip=(false,true) rotate=-90
 type=obj img=cubicle_med.png x=5 y=2 w=3 h=2 flip=(false,true)
 type=obj img=garbage_can.png x=4 y=6 w=1 h=1
 # type=lbot img=computer_sad.png x=3 y=6 w=1 h=1
-type=lbot img=computer_sad.png x=6 y=1 w=1 h=1
+type=plbot img=computer_sad.png x=6 y=1 w=1 h=1 fps=30 path=[(6,1,1,1,4000).(8,1,1,1,0).(8,7,1,1,4000).(8,1,1,1,0)]
 type=obj img=chair.png x=7 y=5 w=1 h=1
 type=obj img=chair.png x=2 y=6 w=1 h=1
 type=obj img=chair.png x=2 y=2 w=1 h=1
-type=pbot img=chasebot.png x=3 y=0 w=1 h=1 path=[(0,0,1,1).(0,3,1,1)]
+type=pbot img=chasebot.png x=3 y=0 w=1 h=1 fps=30 path=[(3,0,1,1,0).(0,0,1,1,0).(0,3,1,1,0)]
 # top-middle
 type=obj img=cubicle_med_computer_happy.png x=9 y=2 w=3 h=2 flip=(false,true)
 type=obj img=cubicle_med.png x=10 y=4 w=2 h=3 rotate=-90
