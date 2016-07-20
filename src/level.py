@@ -68,7 +68,7 @@ def load_level(level, tile_size, window_width, window_height, background, screen
                 monster_list.append(obj)
             elif data["type"] == "wbot":
                 obj = WaitBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
-                                 tile_size * int(data["h"]))
+                              tile_size * int(data["h"]))
                 monster_list.append(obj)
             elif data["type"] == "plbot":
                 obj = PatrolLaserBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),

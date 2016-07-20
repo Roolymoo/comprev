@@ -134,6 +134,22 @@ def _patrol(pbot, *args):
             pbot.advance()
 
 
+def _update_patrol(pbot, player, *args):
+    if not pbot.sighted:
+        if _is_in_sight(pbot, player, *args):
+            pbot.sighted = True
+        elif pbot.clock:
+            # waiting at a node in path
+            pbot.time += pbot.clock.tick(pbot.fps)
+            if pbot.time >= pbot.path[pbot.i][1]:
+                # ready move to next node
+                pbot.clock = None
+                pbot.time = 0
+                pbot.advance()
+        else:
+            _patrol(pbot, *args)
+
+
 class BotMess:
     def __init__(self, rect):
         self.rect = rect
@@ -262,20 +278,9 @@ class PatrolBot(WaitBot):
 
     def move(self, player, *args):
         """loops path if not sighted player, otherwise chases player."""
+        _update_patrol(self, player, *args)
         if not self.sighted:
-            if _is_in_sight(self, player, *args):
-                self.sighted = True
-            elif self.clock:
-                # waiting at a node in path
-                self.time += self.clock.tick(self.fps)
-                if self.time >= self.path[self.i][1]:
-                    # ready move to next node
-                    self.clock = None
-                    self.time = 0
-                return
-            else:
-                _patrol(self, *args)
-                return
+            return
 
         # sighted player, continue chase
         CaptureBot.move(self, player, *args)
@@ -287,21 +292,9 @@ class PatrolLaserBot(PatrolBot, LaserBot):
         self.shot = None
 
     def move(self, player, *args):
+        _update_patrol(self, player, *args)
         if not self.sighted:
-            if _is_in_sight(self, player, *args):
-                self.sighted = True
-            elif self.clock:
-                # waiting at a node in path
-                self.time += self.clock.tick(self.fps)
-                if self.time >= self.path[self.i][1]:
-                    # ready move to next node
-                    self.clock = None
-                    self.time = 0
-                    self.advance()
-                return
-            else:
-                _patrol(self, *args)
-                return
+            return
 
         # sighted player, try to zap him!
         LaserBot.move(self, player, *args)
