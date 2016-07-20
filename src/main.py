@@ -12,6 +12,7 @@ from background import Background
 from level import load_level
 from collision import is_collides
 from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot, PatrolLaserBot
+from events import Spawner
 
 
 def _is_killed_all(monster_list):
@@ -27,11 +28,11 @@ def _is_killed_all(monster_list):
 def _load_level(level):
     background.reset()
     background.render(screen, update_queue)
-    player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", level_dict[level]), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+    player, portal, env_obj_list, monster_list, event_list = load_level(os.path.join("levels", level_dict[level]), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
     # bad fix to ensure player renders on top of any background object
     if player:
         player.render(screen, update_queue)
-    return player, portal, env_obj_list, monster_list
+    return player, portal, env_obj_list, monster_list, event_list
 
 
 if __name__ == "__main__":
@@ -105,9 +106,9 @@ if __name__ == "__main__":
     # levels
     level_dict = {0: STRT_SCRN_N, 1: LEVEL1_N, 2: BOSS_LEVEL_N}
     # load start screen
-    level = 1
+    level = 2
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
-    player, portal, env_obj_list, monster_list = _load_level(level)
+    player, portal, env_obj_list, monster_list, event_list = _load_level(level)
 
     # variable for reference to deque of destroyed monsters
     destroyed = None
@@ -159,6 +160,13 @@ if __name__ == "__main__":
 
             music_loaded = True
 
+        # events
+        for event in event_list:
+            if type(event) is Spawner:
+                if not event.is_spawned:
+                    event.spawn(monster_list, screen, update_queue)
+
+        # input loop
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key in (K_a, K_d, K_w, K_s) and not pause:
@@ -280,6 +288,11 @@ if __name__ == "__main__":
                     background.obj_list.append(monster_mess)
 
                     monster_list.remove(monster)
+                    # remove monster from a spawner if it came from one
+                    for event in event_list:
+                        if type(event) is Spawner:
+                            if event.contains(monster):
+                                event.remove(monster)
 
                     # remove from screen
                     background.render(screen, update_queue, monster.rect.copy())
@@ -292,7 +305,7 @@ if __name__ == "__main__":
                 # reset environment
                 background.reset()
                 background.render(screen, update_queue)
-                player, portal, env_obj_list, monster_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+                player, portal, env_obj_list, monster_list, event_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
 
                 # move to the next level
                 # level += 1
