@@ -91,6 +91,9 @@ if __name__ == "__main__":
     CHASEBOT_LEFT = load_img("chasebot_l.png")
     CHASEBOT_RIGHT = load_img("chasebot_r.png")
     
+    DOOR_OPEN = load_img("door_open.png")
+    DOOR_CLOSED = load_img("door_closed.png")
+    
     # music
     MUSIC_DIR = "music"
     MUSIC_N = "robotpoop (ai)_v2-01.ogg"
@@ -297,6 +300,7 @@ if __name__ == "__main__":
             # remove any destroyed monsters
             if destroyed is not None:
                 for monster in destroyed:
+                    
                     monster_mess = monster.on_death()
                     monster_mess.render(screen, update_queue)
                     background.obj_list.append(monster_mess)
