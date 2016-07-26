@@ -315,13 +315,17 @@ class Boss():
         self.img = None
         self.noise = mixer.Sound(os.path.join("sounds", "explosion_hard1.wav"))
 
-        self.hp = 0
+        self.shield = False
+        self.hp = 10
 
     def render(self, screen, update_queue):
         screen.blit(self.img, self.rect)
 
         update_queue.append(self.rect)
 
+    def move(self, player, *args):
+        return
+    
     def on_death(self):
         self.noise.play()
 

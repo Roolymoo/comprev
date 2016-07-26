@@ -94,11 +94,14 @@ if __name__ == "__main__":
     DOOR_OPEN = load_img("door_open.png")
     DOOR_CLOSED = load_img("door_closed.png")
     
+    BOSS_SMILE = load_img("boss_smile.png")
+    BOSS_SHIELD = load_img("boss_smile_shield.png")
+    
     # music
     MUSIC_DIR = "music"
     MUSIC_N = "robotpoop (ai)_v2-01.ogg"
     MUSIC_BOSS_N = "robotpoop (boss)_v1.ogg"
-
+    
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
@@ -116,7 +119,7 @@ if __name__ == "__main__":
     # levels
     level_dict = {0: STRT_SCRN_N, 1: LEVEL1_N, 2: BOSS_LEVEL_N}
     # load start screen
-    level = 1
+    level = 2
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
 
@@ -310,19 +313,34 @@ if __name__ == "__main__":
             if destroyed is not None:
                 for monster in destroyed:
                     
-                    monster_mess = monster.on_death()
-                    monster_mess.render(screen, update_queue)
-                    background.obj_list.append(monster_mess)
-
-                    monster_list.remove(monster)
-                    # remove monster from a spawner if it came from one
-                    for event in spawner_list:
-                        if type(event) is Spawner:
-                            if event.contains(monster):
-                                event.remove(monster)
-
-                    # remove from screen
-                    background.render(screen, update_queue, monster.rect.copy())
+                    if type(monster) is Boss:
+                        if not monster.shield:
+                            boss.hp -= 1
+                            
+                            if boss.hp < 1:
+                                monster_mess = monster.on_death()
+                                monster_mess.render(screen, update_queue)
+                                background.obj_list.append(monster_mess)    
+                                
+                            else:
+                                boss.shield = True
+                                update_image(monster, 
+                            
+    
+                    else:
+                        monster_mess = monster.on_death()
+                        monster_mess.render(screen, update_queue)
+                        background.obj_list.append(monster_mess)
+    
+                        monster_list.remove(monster)
+                        # remove monster from a spawner if it came from one
+                        for event in spawner_list:
+                            if type(event) is Spawner:
+                                if event.contains(monster):
+                                    event.remove(monster)
+    
+                        # remove from screen
+                        background.render(screen, update_queue, monster.rect.copy())
 
                 destroyed = None
 
