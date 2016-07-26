@@ -98,6 +98,10 @@ if __name__ == "__main__":
     BOSS_SMILE = load_img("boss_smile.png")
     BOSS_SHIELD = load_img("boss_smile_shield.png")
     
+    # clocks for doors
+    door_times = [0, 0, 0, 0]
+    door_clocks = [None, None, None, None]
+    
     # music
     MUSIC_DIR = "music"
     MUSIC_N = "robotpoop (ai)_v2-01.ogg"
@@ -260,6 +264,19 @@ if __name__ == "__main__":
                 running = False
 
         if not pause:
+            # close trapdoors if necessary
+            for trapdoor in spawner_list:
+                if trapdoor.is_open:
+                    trapdoor.time += trapdoor.clock.tick(FPS)
+                    
+                    if trapdoor.time > 2000:
+                        
+                        # remove current trapdoor
+                        background.render(screen, update_queue, trapdoor.rect.copy())                             
+                        
+                        trapdoor.close()
+                        trapdoor.render(screen, update_queue)
+                    
             # monster ai
             for monster in monster_list:
                 # clear old location
@@ -335,8 +352,29 @@ if __name__ == "__main__":
                             monster.hp -= 1
                             
                             if monster.hp == 9:
-                                for trapdoor in spawner_list:
-                                    trapdoor.spawner.spawn(monster_list, screen, update_queue)
+                                spawn_list = [1]
+                            
+                            elif monster.hp >=7 and monster.hp <= 8:
+                                spawn_list = [1,2]
+                                
+                            elif monster.hp >= 4 and monster.hp <= 6:
+                                spawn_list = [1,2,3]
+                                
+                            elif monster.hp >= 1 and monster.hp <= 5:
+                                spawn_list = [1,2,3,4]
+                                
+                            else:
+                                spawn_list = []
+                                
+                            # spawn monsters and open doors
+                            for i in spawn_list:              
+                                
+                                # remove current trapdoor
+                                background.render(screen, update_queue, spawner_list[i].rect.copy())         
+                                
+                                spawner_list[i].open()                                
+                                spawner_list[i].render(screen, update_queue)                
+                                spawner_list[i].spawner.spawn(monster_list, screen, update_queue)
                                     
                             if monster.hp < 1:
                                 monster_mess = monster.on_death()
