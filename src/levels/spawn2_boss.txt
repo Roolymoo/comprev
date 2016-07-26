@@ -1,0 +1,2 @@
+type=lbot img=chasebot.png x=15 y=4 w=1 h=1
+type=cbot img=chasebot.png x=17 y=4 w=1 h=1
