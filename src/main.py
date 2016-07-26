@@ -120,7 +120,7 @@ if __name__ == "__main__":
     # levels
     level_dict = {0: STRT_SCRN_N, 1: INTRO_SCRN_N, 2: LEVEL1_N, 3: BOSS_LEVEL_N}
     # load start screen
-    level = 1
+    level = 3
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
 
@@ -336,6 +336,8 @@ if __name__ == "__main__":
                                 monster_mess.render(screen, update_queue)
                                 background.obj_list.append(monster_mess)    
                                 
+                                monster_list.remove(monster)
+                                
                             else:
                                 
                                 # check if fps has been set to a variable
@@ -344,7 +346,10 @@ if __name__ == "__main__":
                                     
                                 monster.shield_on()
                                 update_image(monster, BOSS_SHIELD, "shield")   
-                                monster.render(screen, update_queue)
+                                
+                            # remove from screen
+                            background.render(screen, update_queue, monster.rect.copy())                            
+                                
                             
                     else:
                         monster_mess = monster.on_death()
