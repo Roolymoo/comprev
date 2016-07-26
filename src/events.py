@@ -26,6 +26,8 @@ def _parse_path(path_raw, tile_size):
 class Spawner:
     """collection of monsters to spawn"""
     def __init__(self):
+        self.file_n = None
+        self.tile_size = None
         self.monsters = deque()
         self.is_spawned = False
 
@@ -47,6 +49,9 @@ class Spawner:
         return monster in self.monsters
 
     def load(self, file_n, tile_size):
+        self.tile_n = file_n
+        self.tile_size = tile_size
+
         with open(os.path.join("levels", file_n)) as file:
             line = file.readline()
             while line:
@@ -88,4 +93,4 @@ class Spawner:
 
     def is_done(self):
         """returns true if all monsters have spawned and died, false otherwise"""
-        return self.spawned and len(self.monsters) == 0
+        return self.is_spawned and len(self.monsters) == 0

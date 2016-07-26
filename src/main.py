@@ -3,7 +3,7 @@ import os.path
 
 import pygame
 from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p, K_ESCAPE, K_y, K_n, K_g
-from pygame import time
+from pygame import time, font, Rect, display
 from img import load_img
 
 from render import update_display
@@ -43,6 +43,7 @@ if __name__ == "__main__":
     # init
     running = True
     killed = False
+    won = False
 
     pygame.init()
 
@@ -124,7 +125,7 @@ if __name__ == "__main__":
     # levels
     level_dict = {0: STRT_SCRN_N, 1: INTRO_SCRN_N, 2: LEVEL1_N, 3: BOSS_LEVEL_N}
     # load start screen
-    level = 3
+    level = 2
 
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
@@ -140,6 +141,7 @@ if __name__ == "__main__":
     update_display(update_queue)
 
     music_loaded = False
+    music_advance = False
 
     # for player pausing game
     pause = False
@@ -188,6 +190,11 @@ if __name__ == "__main__":
 
         # input loop
         for event in pygame.event.get():
+            if level == 3 and music_advance:
+                pygame.mixer.music.load(os.path.join(MUSIC_DIR, MUSIC_BOSS_N))
+                pygame.mixer.music.play(-1)
+                music_advance = False
+
             if event.type == KEYDOWN:
                 # ~~~~~DEBUG ONLY~~~~~~~~~~~~~~
                 if event.key == K_g:
@@ -244,7 +251,7 @@ if __name__ == "__main__":
                     if bomb_ctr < BOMB_LIMIT:
                         bomb_list.append(player.drop_bomb(FPS))
                         bomb_ctr += 1
-                elif event.key == K_ESCAPE and not (level in (0, 1)):
+                elif event.key == K_ESCAPE and not (level in (0, 1, 4)):
                     # toggle
                     pause = not pause
                     if music_pause:
@@ -393,9 +400,7 @@ if __name__ == "__main__":
                                 update_image(monster, BOSS_SHIELD, "shield")   
                                 
                             # remove from screen
-                            background.render(screen, update_queue, monster.rect.copy())                            
-                                
-                            
+                            background.render(screen, update_queue, monster.rect.copy())
                     else:
                         monster_mess = monster.on_death()
                         monster_mess.render(screen, update_queue)
@@ -415,14 +420,22 @@ if __name__ == "__main__":
 
             # check if player advanced to next level (at portal and killed all bots)
             if portal and player.rect.colliderect(portal.rect) and _is_killed_all(monster_list):
+                # time.wait(2000)
+                if level == 2:
+                    pygame.mixer.music.fadeout(2000)
                 time.wait(2000)
                 level += 1
                 player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
-                # move to the next level
-                # level += 1
+                music_advance = True
 
-                # reset music shortcut
-                # music_loaded = False
+            # check if player won
+            if level == 3 and _is_killed_all(monster_list):
+                pygame.mixer.music.fadeout(2000)
+                time.wait(2000)
+                level += 1
+                player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
+                won = True
+                running = False
 
         update_display(update_queue)
 
@@ -435,3 +448,10 @@ if __name__ == "__main__":
     if killed:
         # freeze for a sec so player can see how they died (e.g. see laser rendered for a bit)
         time.wait(2000)
+    elif won:
+        # Let player hit a key to quit game when they are ready
+        running = True
+        while running:
+             for event in pygame.event.get():
+                 if event.key:
+                     running = False
