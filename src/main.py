@@ -11,7 +11,7 @@ from player import Player
 from background import Background
 from level import load_level
 from collision import is_collides
-from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot, PatrolLaserBot
+from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot, PatrolLaserBot, Boss
 from events import Spawner
 
 
@@ -92,11 +92,17 @@ if __name__ == "__main__":
     CHASEBOT_LEFT = load_img("chasebot_l.png")
     CHASEBOT_RIGHT = load_img("chasebot_r.png")
     
+    DOOR_OPEN = load_img("door_open.png")
+    DOOR_CLOSED = load_img("door_closed.png")
+    
+    BOSS_SMILE = load_img("boss_smile.png")
+    BOSS_SHIELD = load_img("boss_smile_shield.png")
+    
     # music
     MUSIC_DIR = "music"
     MUSIC_N = "robotpoop (ai)_v2-01.ogg"
     MUSIC_BOSS_N = "robotpoop (boss)_v1.ogg"
-
+    
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
@@ -276,6 +282,19 @@ if __name__ == "__main__":
                     else:
                         update_image(monster, CHASEBOT_RIGHT, "right")
                     
+                if type(monster) is Boss:
+                    
+                    print (monster.hp)
+                    print(monster.shield)
+                    
+                    if monster.shield:
+                        monster.time += monster.clock.tick(monster.fps)
+                                               
+                        # Check if shield should be turned off
+                        if monster.time > monster.shield_time:
+                            monster.shield_off()      
+                            update_image(monster, BOSS_SMILE, "smile")
+                            
                 monster.render(screen, update_queue)
 
                 # Check if player died
@@ -310,19 +329,40 @@ if __name__ == "__main__":
             # remove any destroyed monsters
             if destroyed is not None:
                 for monster in destroyed:
-                    monster_mess = monster.on_death()
-                    monster_mess.render(screen, update_queue)
-                    background.obj_list.append(monster_mess)
-
-                    monster_list.remove(monster)
-                    # remove monster from a spawner if it came from one
-                    for event in spawner_list:
-                        if type(event) is Spawner:
-                            if event.contains(monster):
-                                event.remove(monster)
-
-                    # remove from screen
-                    background.render(screen, update_queue, monster.rect.copy())
+                    
+                    if type(monster) is Boss:
+                        if not monster.shield:
+                            monster.hp -= 1
+                            
+                            if monster.hp < 1:
+                                monster_mess = monster.on_death()
+                                monster_mess.render(screen, update_queue)
+                                background.obj_list.append(monster_mess)    
+                                
+                            else:
+                                
+                                # check if fps has been set to a variable
+                                if monster.fps == None:
+                                    monster.fps = FPS
+                                    
+                                monster.shield_on()
+                                update_image(monster, BOSS_SHIELD, "shield")   
+                                monster.render(screen, update_queue)
+                            
+                    else:
+                        monster_mess = monster.on_death()
+                        monster_mess.render(screen, update_queue)
+                        background.obj_list.append(monster_mess)
+    
+                        monster_list.remove(monster)
+                        # remove monster from a spawner if it came from one
+                        for event in spawner_list:
+                            if type(event) is Spawner:
+                                if event.contains(monster):
+                                    event.remove(monster)
+    
+                        # remove from screen
+                        background.render(screen, update_queue, monster.rect.copy())
 
                 destroyed = None
 

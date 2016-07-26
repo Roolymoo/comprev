@@ -4,7 +4,7 @@ import os.path
 from pygame import transform, Rect, font
 
 from obj import Obj, Portal, TrapDoor
-from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot, PatrolLaserBot
+from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot, PatrolLaserBot, Boss
 from img import load_img
 from player import Player
 from events import Spawner
@@ -56,6 +56,10 @@ def load_level(level, tile_size, window_width, window_height, background, screen
                 obj = Obj(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
                           tile_size * int(data["h"]))
                 env_obj_list.append(obj)
+            elif data["type"] == "boss":
+                obj = Boss(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
+                                 tile_size * int(data["h"]))
+                monster_list.append(obj)                
             elif data["type"] == "cbot":
                 obj = CaptureBot(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
                                  tile_size * int(data["h"]))
