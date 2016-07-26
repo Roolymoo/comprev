@@ -34,6 +34,10 @@ def _load_level(level):
         player.render(screen, update_queue)
     return player, portal, env_obj_list, monster_list, event_list
 
+    
+def update_image(mover, new_image, new_name):
+    mover.img = new_image
+    mover.img_name = new_name 
 
 if __name__ == "__main__":
     # init
@@ -84,6 +88,9 @@ if __name__ == "__main__":
     PLAYER_LEFT_2 = load_img("man_2_left2.png")
     move_count = 0
 
+    CHASEBOT_LEFT = load_img("chasebot_l.png")
+    CHASEBOT_RIGHT = load_img("chasebot_r.png")
+    
     # music
     MUSIC_DIR = "music"
     MUSIC_N = "robotpoop (ai)_v2-01.ogg"
@@ -249,6 +256,13 @@ if __name__ == "__main__":
 
                 monster.move(player, env_obj_list, monster_list_copy)
 
+                # update image
+                if monster.move_count > 1:
+                    update_image(monster, CHASEBOT_LEFT, "left")
+                    monster.move_count = 0
+                else:
+                    update_image(monster, CHASEBOT_RIGHT, "right")
+                    
                 monster.render(screen, update_queue)
 
                 # Check if player died

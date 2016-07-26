@@ -149,7 +149,6 @@ def _update_patrol(pbot, player, *args):
         else:
             _patrol(pbot, *args)
 
-
 class BotMess:
     def __init__(self, rect):
         self.rect = rect
@@ -160,8 +159,7 @@ class BotMess:
 
         update_queue.append(self.rect)
 
-
-class CaptureBot:
+class CaptureBot():
     """Tries to contact (capture) player (be in within 0 pixels in some direction from player)."""
 
     def __init__(self, x, y, w, h):
@@ -171,6 +169,11 @@ class CaptureBot:
         self.mov_unit = int(w / 25)
         # Most recently collided into object
         self.adj_obj = None
+        
+        # Move counter for animation
+        self.move_count = 0        
+        self.img_name = ""
+    
 
     def move(self, player, *args):
         """args is a collection of iterables each containing objects. Moves closer to rect (for Capture bot it is Player)."""
@@ -190,6 +193,9 @@ class CaptureBot:
 
         # doesn't move if it can't get closer to player
 
+        # increase move_counter for animation
+        self.move_count += 1
+        
     def render(self, screen, update_queue):
         screen.blit(self.img, self.rect)
 
