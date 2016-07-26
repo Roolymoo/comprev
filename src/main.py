@@ -113,7 +113,7 @@ if __name__ == "__main__":
     # levels
     level_dict = {0: STRT_SCRN_N, 1: LEVEL1_N, 2: BOSS_LEVEL_N}
     # load start screen
-    level = 2
+    level = 1
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
 
@@ -257,12 +257,20 @@ if __name__ == "__main__":
 
                 monster.move(player, env_obj_list, monster_list_copy)
 
-                # update image
-                if monster.move_count > 1:
-                    update_image(monster, CHASEBOT_LEFT, "left")
-                    monster.move_count = 0
-                else:
-                    update_image(monster, CHASEBOT_RIGHT, "right")
+                if type(monster) in (PatrolBot, CaptureBot):
+                    # update image
+                    if monster.move_count > 1:
+                        update_image(monster, CHASEBOT_LEFT, "left")
+                        monster.move_count = 0
+                    else:
+                        update_image(monster, CHASEBOT_RIGHT, "right")
+                if type(monster) is WaitBot and monster.sighted:
+                    # update image
+                    if monster.move_count > 1:
+                        update_image(monster, CHASEBOT_LEFT, "left")
+                        monster.move_count = 0
+                    else:
+                        update_image(monster, CHASEBOT_RIGHT, "right")
                     
                 monster.render(screen, update_queue)
 

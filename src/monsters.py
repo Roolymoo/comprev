@@ -286,6 +286,7 @@ class PatrolBot(WaitBot):
         """loops path if not sighted player, otherwise chases player."""
         _update_patrol(self, player, *args)
         if not self.sighted:
+            self.move_count += 1
             return
 
         # sighted player, continue chase
