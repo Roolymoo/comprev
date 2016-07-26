@@ -1,0 +1,2 @@
+type=cbot img=chasebot.png x=16 y=10 w=1 h=1
+type=cbot img=chasebot.png x=16 y=12 w=1 h=1
