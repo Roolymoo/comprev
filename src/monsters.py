@@ -307,3 +307,21 @@ class PatrolLaserBot(PatrolBot, LaserBot):
 
     def render(self, screen, update_queue):
         LaserBot.render(self, screen, update_queue)
+
+class Boss():
+    def __init__(self, x, y, w, h):
+        self.rect = Rect(x, y, w, h)
+        self.img = None
+        self.noise = mixer.Sound(os.path.join("sounds", "explosion_hard1.wav"))
+
+        self.hp = 0
+
+    def render(self, screen, update_queue):
+        screen.blit(self.img, self.rect)
+
+        update_queue.append(self.rect)
+
+    def on_death(self):
+        self.noise.play()
+
+        return BotMess(self.rect.copy())        
