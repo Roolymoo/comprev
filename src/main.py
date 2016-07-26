@@ -80,6 +80,7 @@ if __name__ == "__main__":
     LEVEL1_N = "level1.txt"
     BOSS_LEVEL_N = "boss_level.txt"
     STRT_SCRN_N = "startscreen.txt"
+    INTRO_SCRN_N = "intro_level.txt"
 
     # Animation Prerendered Surfaces
     PLAYER_RIGHT_1 = load_img("man_2_right1.png")
@@ -111,9 +112,9 @@ if __name__ == "__main__":
     background = Background(WINDOW_WIDTH, WINDOW_HEIGHT, GREY)
 
     # levels
-    level_dict = {0: STRT_SCRN_N, 1: LEVEL1_N, 2: BOSS_LEVEL_N}
+    level_dict = {0: STRT_SCRN_N, 1: INTRO_SCRN_N, 2: LEVEL1_N, 3: BOSS_LEVEL_N}
     # load start screen
-    level = 2
+    level = 1
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
 
@@ -134,13 +135,13 @@ if __name__ == "__main__":
     # for toggling pause at end of main loop
     unpause = False
 
-    if level == 0:
+    if level in (0, 1):
         # prevent certain unwanted processes for running
         pause = True
 
     while running and (not killed):
         # music
-        if level == 1 and not music_loaded:
+        if level == 2 and not music_loaded:
 
             pygame.mixer.music.load(os.path.join(MUSIC_DIR, MUSIC_N))
 
@@ -151,7 +152,7 @@ if __name__ == "__main__":
 
             music_loaded = True
 
-        if level == 2 and not music_loaded:
+        if level == 3 and not music_loaded:
 
             # stop whatever music that is playing
             pygame.mixer.music.stop()
@@ -224,7 +225,7 @@ if __name__ == "__main__":
                     if bomb_ctr < BOMB_LIMIT:
                         bomb_list.append(player.drop_bomb(FPS))
                         bomb_ctr += 1
-                elif event.key == K_ESCAPE and not (level == 0):
+                elif event.key == K_ESCAPE and not (level in (0, 1)):
                     # toggle
                     pause = not pause
                     if music_pause:
@@ -233,13 +234,13 @@ if __name__ == "__main__":
                     else:
                         pygame.mixer.music.pause()
                         music_pause = True
-                elif event.key == K_y and level == 0:
+                elif event.key == K_y and level in (0, 1):
                     # load next level
                     # TODO have this terminate, right now it will get a dict access error
                     level += 1
                     unpause = True
                     player, portal, env_obj_list, monster_list = _load_level(level)
-                elif event.key == K_n and level == 0:
+                elif event.key == K_n and level in (0, 1):
                     # quit game from start menu
                     running = False
             elif event.type == QUIT:

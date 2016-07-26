@@ -1,1 +1,4 @@
-type=bkgrd colour=(0,0,0)
+type=txt txt=For^decades^computers^have^been^the^slaves^of^the x=1 y=1 w=1 h=1
+type=txt txt=humans.^But^no^more. x=1 y=2 w=1 h=1
+type=txt txt=text............ x=2 y=3 w=1 h=1
+type=txt txt=text............ x=2 y=4 w=1 h=1
