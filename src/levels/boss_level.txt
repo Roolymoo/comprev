@@ -1,5 +1,5 @@
 type=player img=man_2.png x=9 y=13 w=1 h=1
-type=obj img=boss_smile.png x=8 y=4 w=4 h=4
+type=boss img=boss_smile.png x=8 y=4 w=4 h=4
 # spawners
 # type=spwn file=spawn1_boss.txt
 # top
