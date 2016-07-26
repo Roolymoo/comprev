@@ -12,3 +12,17 @@ type=obj img=computer_wall3.png x=11 y=0 w=2 h=2
 type=obj img=computer_wall3.png x=13 y=0 w=2 h=2
 type=obj img=computer_wall3.png x=15 y=0 w=2 h=2
 type=obj img=computer_wall3.png x=17 y=0 w=2 h=2
+# right
+type=obj img=computer_wall3_vert.png x=19 y=2 w=1 h=2
+type=obj img=computer_wall3_vert.png x=19 y=4 w=1 h=2
+type=obj img=computer_wall3_vert.png x=19 y=6 w=1 h=2
+type=obj img=computer_wall3_vert.png x=19 y=8 w=1 h=2
+type=obj img=computer_wall3_vert.png x=19 y=10 w=1 h=2
+type=obj img=computer_wall3_vert.png x=19 y=12 w=1 h=2
+# left
+type=obj img=computer_wall3_vert2.png x=0 y=2 w=1 h=2
+type=obj img=computer_wall3_vert2.png x=0 y=4 w=1 h=2
+type=obj img=computer_wall3_vert2.png x=0 y=6 w=1 h=2
+type=obj img=computer_wall3_vert2.png x=0 y=8 w=1 h=2
+type=obj img=computer_wall3_vert2.png x=0 y=10 w=1 h=2
+type=obj img=computer_wall3_vert2.png x=0 y=12 w=1 h=2
