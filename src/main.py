@@ -28,11 +28,11 @@ def _is_killed_all(monster_list):
 def _load_level(level):
     background.reset()
     background.render(screen, update_queue)
-    player, portal, env_obj_list, monster_list, event_list = load_level(os.path.join("levels", level_dict[level]), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+    player, portal, env_obj_list, monster_list, spawner_list = load_level(os.path.join("levels", level_dict[level]), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
     # bad fix to ensure player renders on top of any background object
     if player:
         player.render(screen, update_queue)
-    return player, portal, env_obj_list, monster_list, event_list
+    return player, portal, env_obj_list, monster_list, spawner_list
 
     
 def update_image(mover, new_image, new_name):
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     # load start screen
     level = 2
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
-    player, portal, env_obj_list, monster_list, event_list = _load_level(level)
+    player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
 
     # variable for reference to deque of destroyed monsters
     destroyed = None
@@ -167,11 +167,12 @@ if __name__ == "__main__":
 
             music_loaded = True
 
-        # events
-        for event in event_list:
-            if type(event) is Spawner:
-                if not event.is_spawned:
-                    event.spawn(monster_list, screen, update_queue)
+        # ~~~~possibly deprecated
+        # # events
+        # for event in spawner_list:
+        #     if type(event) is Spawner:
+        #         if not event.is_spawned:
+        #             event.spawn(monster_list, screen, update_queue)
 
         # input loop
         for event in pygame.event.get():
@@ -303,7 +304,7 @@ if __name__ == "__main__":
 
                     monster_list.remove(monster)
                     # remove monster from a spawner if it came from one
-                    for event in event_list:
+                    for event in spawner_list:
                         if type(event) is Spawner:
                             if event.contains(monster):
                                 event.remove(monster)
@@ -319,7 +320,7 @@ if __name__ == "__main__":
                 # reset environment
                 background.reset()
                 background.render(screen, update_queue)
-                player, portal, env_obj_list, monster_list, event_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
+                player, portal, env_obj_list, monster_list, spawner_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
 
                 # move to the next level
                 # level += 1

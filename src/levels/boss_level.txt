@@ -1,7 +1,7 @@
 type=player img=man_2.png x=9 y=13 w=1 h=1
 type=obj img=boss_smile.png x=8 y=4 w=4 h=4
 # spawners
-type=spwn file=spawn1_boss.txt
+# type=spwn file=spawn1_boss.txt
 # top
 type=obj img=computer_wall3.png x=1 y=0 w=2 h=2
 type=obj img=computer_wall3.png x=3 y=0 w=2 h=2
@@ -26,3 +26,5 @@ type=obj img=computer_wall3_vert2.png x=0 y=6 w=1 h=2
 type=obj img=computer_wall3_vert2.png x=0 y=8 w=1 h=2
 type=obj img=computer_wall3_vert2.png x=0 y=10 w=1 h=2
 type=obj img=computer_wall3_vert2.png x=0 y=12 w=1 h=2
+# center
+type=trapdoor file=spawn1_boss.txt open=door_open.png closed=door_closed.png x=4 y=6 w=1 h=1
