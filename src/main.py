@@ -11,7 +11,7 @@ from player import Player
 from background import Background
 from level import load_level
 from collision import is_collides
-from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot, PatrolLaserBot
+from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot, PatrolLaserBot, Boss
 from events import Spawner
 
 
@@ -278,6 +278,19 @@ if __name__ == "__main__":
                     else:
                         update_image(monster, CHASEBOT_RIGHT, "right")
                     
+                if type(monster) is Boss:
+                    
+                    print (monster.hp)
+                    print(monster.shield)
+                    
+                    if monster.shield:
+                        monster.time += monster.clock.tick(monster.fps)
+                                               
+                        # Check if shield should be turned off
+                        if monster.time > monster.shield_time:
+                            monster.shield_off()      
+                            update_image(monster, BOSS_SMILE, "smile")
+                            
                 monster.render(screen, update_queue)
 
                 # Check if player died
@@ -315,18 +328,23 @@ if __name__ == "__main__":
                     
                     if type(monster) is Boss:
                         if not monster.shield:
-                            boss.hp -= 1
+                            monster.hp -= 1
                             
-                            if boss.hp < 1:
+                            if monster.hp < 1:
                                 monster_mess = monster.on_death()
                                 monster_mess.render(screen, update_queue)
                                 background.obj_list.append(monster_mess)    
                                 
                             else:
-                                boss.shield = True
-                                update_image(monster, 
+                                
+                                # check if fps has been set to a variable
+                                if monster.fps == None:
+                                    monster.fps = FPS
+                                    
+                                monster.shield_on()
+                                update_image(monster, BOSS_SHIELD, "shield")   
+                                monster.render(screen, update_queue)
                             
-    
                     else:
                         monster_mess = monster.on_death()
                         monster_mess.render(screen, update_queue)

@@ -317,7 +317,16 @@ class Boss():
 
         self.shield = False
         self.hp = 10
-
+        
+        self.img_name = ""
+        
+        self.fps = None
+        
+        self.clock = time.Clock()
+        self.shield_time = 3000
+        self.previous_shield = 0;
+        self.time = 0
+        
     def render(self, screen, update_queue):
         screen.blit(self.img, self.rect)
 
@@ -325,6 +334,14 @@ class Boss():
 
     def move(self, player, *args):
         return
+    
+    def shield_on(self):
+        self.shield = True
+        self.time = 0
+        
+    def shield_off(self):
+        self.shield = False
+        self.time = 0 
     
     def on_death(self):
         self.noise.play()
