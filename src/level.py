@@ -13,7 +13,7 @@ from events import Spawner
 def _get_dict():
     """Used for parsing levels."""
     return {"type": None, "img": None, "x": None, "y": None, "w": None, "h": None, "flip": None, "rotate": None,
-            "scale": None, "fps": None, "file": None, "path": None, "open": None, "closed": None}
+            "scale": None, "fps": None, "file": None, "path": None, "open": None, "closed": None, "colour": None}
 
 
 def _parse_path(path_raw, tile_size):
