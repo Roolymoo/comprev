@@ -284,10 +284,6 @@ if __name__ == "__main__":
                         update_image(monster, CHASEBOT_RIGHT, "right")
                     
                 if type(monster) is Boss:
-                    
-                    print (monster.hp)
-                    print(monster.shield)
-                    
                     if monster.shield:
                         monster.time += monster.clock.tick(monster.fps)
                                                
@@ -347,7 +343,7 @@ if __name__ == "__main__":
                                 # check if fps has been set to a variable
                                 if monster.fps == None:
                                     monster.fps = FPS
-                                    
+
                                 monster.shield_on()
                                 update_image(monster, BOSS_SHIELD, "shield")   
                                 

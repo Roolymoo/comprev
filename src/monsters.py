@@ -324,7 +324,7 @@ class Boss():
         
         self.clock = time.Clock()
         self.shield_time = 3000
-        self.previous_shield = 0;
+        self.previous_shield = 0
         self.time = 0
         
     def render(self, screen, update_queue):
@@ -338,10 +338,12 @@ class Boss():
     def shield_on(self):
         self.shield = True
         self.time = 0
+        self.clock = time.Clock()
         
     def shield_off(self):
         self.shield = False
-        self.time = 0 
+        self.time = 0
+        self.clock = None
     
     def on_death(self):
         self.noise.play()
