@@ -7,9 +7,13 @@ class Obj:
     def __init__(self, x, y, w, h):
         self.rect = Rect(x, y, w, h)
         self.img = None
+        self.colour = None
 
     def render(self, screen, update_queue):
-        screen.blit(self.img, self.rect)
+        if self.img:
+            screen.blit(self.img, self.rect)
+        elif self.colour:
+            screen.fill(self.colour, self.rect)
 
         update_queue.append(self.rect)
 

@@ -92,6 +92,8 @@ def load_level(level, tile_size, window_width, window_height, background, screen
             elif data["type"] == "bkgrd":
                 obj = Obj(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
                           tile_size * int(data["h"]))
+                if data["colour"]:
+                    obj.colour = tuple(int(i) for i in data["colour"].strip("()").split(","))
                 background.obj_list.append(obj)
             elif data["type"] == "txt":
                 obj = Obj(tile_size * int(data["x"]), tile_size * int(data["y"]), tile_size * int(data["w"]),
