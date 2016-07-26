@@ -120,7 +120,7 @@ if __name__ == "__main__":
     # levels
     level_dict = {0: STRT_SCRN_N, 1: INTRO_SCRN_N, 2: LEVEL1_N, 3: BOSS_LEVEL_N}
     # load start screen
-    level = 3
+    level = 0
 
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
@@ -188,6 +188,11 @@ if __name__ == "__main__":
                 # ~~~~~DEBUG ONLY~~~~~~~~~~~~~~
                 if event.key == K_g:
                     destroyed = monster_list.__copy__()
+                elif event.key and level == 1:
+                    # load next level, first level with enemies
+                    level += 1
+                    unpause = True
+                    player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
                 elif event.key in (K_a, K_d, K_w, K_s) and not pause:
                     # player to be moved, clear old location
                     background.render(screen, update_queue, player.rect.copy())
@@ -244,13 +249,11 @@ if __name__ == "__main__":
                     else:
                         pygame.mixer.music.pause()
                         music_pause = True
-                elif event.key == K_y and level in (0, 1):
+                elif event.key == K_y and level == 0:
                     # load next level
-                    # TODO have this terminate, right now it will get a dict access error
                     level += 1
-                    unpause = True
-                    player, portal, env_obj_list, monster_list = _load_level(level)
-                elif event.key == K_n and level in (0, 1):
+                    player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
+                elif event.key == K_n and level == 0:
                     # quit game from start menu
                     running = False
             elif event.type == QUIT:
@@ -375,11 +378,8 @@ if __name__ == "__main__":
             # check if player advanced to next level (at portal and killed all bots)
             if portal and player.rect.colliderect(portal.rect) and _is_killed_all(monster_list):
                 time.wait(2000)
-                # reset environment
-                background.reset()
-                background.render(screen, update_queue)
-                player, portal, env_obj_list, monster_list, spawner_list = load_level(os.path.join("levels", LEVEL1_N), TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, background, screen, update_queue)
-
+                level += 1
+                player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
                 # move to the next level
                 # level += 1
 
