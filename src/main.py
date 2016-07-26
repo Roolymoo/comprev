@@ -331,6 +331,10 @@ if __name__ == "__main__":
                         if not monster.shield:
                             monster.hp -= 1
                             
+                            if monster.hp == 9:
+                                for trapdoor in spawner_list:
+                                    trapdoor.spawner.spawn(monster_list, screen, update_queue)
+                                    
                             if monster.hp < 1:
                                 monster_mess = monster.on_death()
                                 monster_mess.render(screen, update_queue)
