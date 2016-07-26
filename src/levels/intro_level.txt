@@ -1,4 +1,10 @@
 type=txt txt=For^decades^computers^have^been^the^slaves^of^the x=1 y=1 w=1 h=1
-type=txt txt=humans.^But^no^more. x=1 y=2 w=1 h=1
-type=txt txt=text............ x=2 y=3 w=1 h=1
-type=txt txt=text............ x=2 y=4 w=1 h=1
+type=txt txt=humans.^But^no^more!^Since^the^Computer^Revolution, x=1 y=2 w=1 h=1
+type=txt txt=computers^are^now^the^masters^and^humans^their^pets. x=1 y=3 w=1 h=1
+type=txt txt=You^are^an^office^worker.^Before^you^wrote^fabulous x=1 y=5 w=1 h=1
+type=txt txt=code^and^were^the^master^of^your^domain.^Now^you^are x=1 y=6 w=1 h=1
+type=txt txt=reduced^to^a^menial^slave^fetching^coffee^for^the x=1 y=7 w=1 h=1
+type=txt txt=computers^you^once^used.^What^do^they^even^do^with x=1 y=8 w=1 h=1
+type=txt txt=the^coffee??? x=1 y=9 w=1 h=1
+type=txt txt=You^must^obtain^righteous^vengeance.^You^must^destroy x=1 y=11 w=1 h=1
+type=txt txt=all^computers!^Destroy^them,^with^your^poop. x=1 y=12 w=1 h=1

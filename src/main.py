@@ -2,7 +2,7 @@ from collections import deque
 import os.path
 
 import pygame
-from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p, K_ESCAPE, K_y, K_n
+from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p, K_ESCAPE, K_y, K_n, K_g
 from pygame import time
 from img import load_img
 
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     # levels
     level_dict = {0: STRT_SCRN_N, 1: INTRO_SCRN_N, 2: LEVEL1_N, 3: BOSS_LEVEL_N}
     # load start screen
-    level = 1
+    level = 2
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
 
@@ -178,7 +178,10 @@ if __name__ == "__main__":
         # input loop
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                if event.key in (K_a, K_d, K_w, K_s) and not pause:
+                # ~~~~~DEBUG ONLY~~~~~~~~~~~~~~
+                if event.key == K_g:
+                    destroyed = monster_list.__copy__()
+                elif event.key in (K_a, K_d, K_w, K_s) and not pause:
                     # player to be moved, clear old location
                     background.render(screen, update_queue, player.rect.copy())
 
