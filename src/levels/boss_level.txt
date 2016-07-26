@@ -28,6 +28,6 @@ type=obj img=computer_wall3_vert2.png x=0 y=10 w=1 h=2
 type=obj img=computer_wall3_vert2.png x=0 y=12 w=1 h=2
 # center
 type=trapdoor file=spawn1_boss.txt open=door_open.png closed=door_closed.png x=3 y=4 w=1 h=1
-type=trapdoor file=spawn1_boss.txt open=door_open.png closed=door_closed.png x=16 y=4 w=1 h=1
-type=trapdoor file=spawn1_boss.txt open=door_open.png closed=door_closed.png x=3 y=11 w=1 h=1
-type=trapdoor file=spawn1_boss.txt open=door_open.png closed=door_closed.png x=16 y=11 w=1 h=1
+type=trapdoor file=spawn2_boss.txt open=door_open.png closed=door_closed.png x=16 y=4 w=1 h=1
+type=trapdoor file=spawn3_boss.txt open=door_open.png closed=door_closed.png x=3 y=11 w=1 h=1
+type=trapdoor file=spawn4_boss.txt open=door_open.png closed=door_closed.png x=16 y=11 w=1 h=1
