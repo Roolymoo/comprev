@@ -33,6 +33,11 @@ class Spawner:
 
     def spawn(self, monster_list, screen, update_queue):
         """appends all monsters to monster_list and renders them"""
+
+        # resets the monsters deque and spawns new monsters - assumes monsters have been loaded before
+        self.monsters = deque()
+        self.load(self.file_n, self.tile_size)
+
         for monster in self.monsters:
             monster_list.append(monster)
             monster.render(screen, update_queue)
@@ -49,7 +54,7 @@ class Spawner:
         return monster in self.monsters
 
     def load(self, file_n, tile_size):
-        self.tile_n = file_n
+        self.file_n = file_n
         self.tile_size = tile_size
 
         with open(os.path.join("levels", file_n)) as file:
@@ -90,6 +95,8 @@ class Spawner:
                     monster.img = load_img(data["img"])
 
                 line = file.readline()
+
+            file.close()
 
     def is_done(self):
         """returns true if all monsters have spawned and died, false otherwise"""

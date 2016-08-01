@@ -34,10 +34,10 @@ def _load_level(level):
         player.render(screen, update_queue)
     return player, portal, env_obj_list, monster_list, spawner_list
 
-    
+
 def update_image(mover, new_image, new_name):
     mover.img = new_image
-    mover.img_name = new_name 
+    mover.img_name = new_name
 
 if __name__ == "__main__":
     # init
@@ -92,22 +92,22 @@ if __name__ == "__main__":
 
     CHASEBOT_LEFT = load_img("chasebot_l.png")
     CHASEBOT_RIGHT = load_img("chasebot_r.png")
-    
+
     DOOR_OPEN = load_img("door_open.png")
     DOOR_CLOSED = load_img("door_closed.png")
-    
+
     BOSS_SMILE = load_img("boss_smile.png")
     BOSS_SHIELD = load_img("boss_smile_shield.png")
-    
+
     # clocks for doors
     door_times = [0, 0, 0, 0]
     door_clocks = [None, None, None, None]
-    
+
     # music
     MUSIC_DIR = "music"
     MUSIC_N = "robotpoop (ai)_v2-01.ogg"
     MUSIC_BOSS_N = "robotpoop (boss)_v1.ogg"
-    
+
     # Create the screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
@@ -125,7 +125,7 @@ if __name__ == "__main__":
     # levels
     level_dict = {0: STRT_SCRN_N, 1: INTRO_SCRN_N, 2: LEVEL1_N, 3: BOSS_LEVEL_N}
     # load start screen
-    level = 2
+    level = 3
 
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
@@ -275,15 +275,15 @@ if __name__ == "__main__":
             for trapdoor in spawner_list:
                 if trapdoor.is_open:
                     trapdoor.time += trapdoor.clock.tick(FPS)
-                    
+
                     if trapdoor.time > 2000:
-                        
+
                         # remove current trapdoor
-                        background.render(screen, update_queue, trapdoor.rect.copy())                             
-                        
+                        background.render(screen, update_queue, trapdoor.rect.copy())
+
                         trapdoor.close()
                         trapdoor.render(screen, update_queue)
-                    
+
             # monster ai
             for monster in monster_list:
                 # clear old location
@@ -309,16 +309,16 @@ if __name__ == "__main__":
                         monster.move_count = 0
                     else:
                         update_image(monster, CHASEBOT_RIGHT, "right")
-                    
+
                 if type(monster) is Boss:
                     if monster.shield:
                         monster.time += monster.clock.tick(monster.fps)
-                                               
+
                         # Check if shield should be turned off
                         if monster.time > monster.shield_time:
-                            monster.shield_off()      
+                            monster.shield_off()
                             update_image(monster, BOSS_SMILE, "smile")
-                            
+
                 monster.render(screen, update_queue)
 
                 # Check if player died
@@ -353,66 +353,67 @@ if __name__ == "__main__":
             # remove any destroyed monsters
             if destroyed is not None:
                 for monster in destroyed:
-                    
+
+                    # spawn monsters
                     if type(monster) is Boss:
                         if not monster.shield:
                             monster.hp -= 1
-                            
+
                             if monster.hp == 9:
                                 spawn_list = [1]
-                            
+
                             elif monster.hp >=7 and monster.hp <= 8:
                                 spawn_list = [1,2]
-                                
+
                             elif monster.hp >= 4 and monster.hp <= 6:
                                 spawn_list = [1,2,3]
-                                
+
                             elif monster.hp >= 1 and monster.hp <= 5:
                                 spawn_list = [1,2,3,4]
-                                
+
                             else:
                                 spawn_list = []
-                                
+
                             # spawn monsters and open doors
-                            for i in spawn_list:              
-                                
+                            for i in spawn_list:
+
                                 # remove current trapdoor
-                                background.render(screen, update_queue, spawner_list[i].rect.copy())         
-                                
-                                spawner_list[i].open()                                
-                                spawner_list[i].render(screen, update_queue)                
+                                background.render(screen, update_queue, spawner_list[i].rect.copy())
+
+                                spawner_list[i].open()
+                                spawner_list[i].render(screen, update_queue)
                                 spawner_list[i].spawner.spawn(monster_list, screen, update_queue)
-                                    
+
                             if monster.hp < 1:
                                 monster_mess = monster.on_death()
                                 monster_mess.render(screen, update_queue)
-                                background.obj_list.append(monster_mess)    
-                                
+                                background.obj_list.append(monster_mess)
+
                                 monster_list.remove(monster)
-                                
+
                             else:
-                                
+
                                 # check if fps has been set to a variable
                                 if monster.fps == None:
                                     monster.fps = FPS
 
                                 monster.shield_on()
-                                update_image(monster, BOSS_SHIELD, "shield")   
-                                
+                                update_image(monster, BOSS_SHIELD, "shield")
+
                             # remove from screen
                             background.render(screen, update_queue, monster.rect.copy())
                     else:
                         monster_mess = monster.on_death()
                         monster_mess.render(screen, update_queue)
                         background.obj_list.append(monster_mess)
-    
+
                         monster_list.remove(monster)
                         # remove monster from a spawner if it came from one
                         for event in spawner_list:
                             if type(event) is Spawner:
                                 if event.contains(monster):
                                     event.remove(monster)
-    
+
                         # remove from screen
                         background.render(screen, update_queue, monster.rect.copy())
 

@@ -1,4 +1,4 @@
-from pygame import Rect
+from pygame import Rect, time
 
 from img import load_img
 
@@ -29,14 +29,24 @@ class TrapDoor(Obj):
         self.imgs = {"open": None, "closed": None}
         self.is_open = False
         self.spawner = None
+        self.time = 0
+        self.clock = time.Clock()
 
     def is_open(self):
         return self.is_open
 
     def open(self):
+
         self.is_open = True
         self.img = load_img(self.imgs["open"])
 
+        self.time = 0
+        self.clock = time.Clock()
+
     def close(self):
+
         self.is_open = False
         self.img = load_img(self.imgs["closed"])
+
+        self.time = 0
+        self.clock = time.Clock()
