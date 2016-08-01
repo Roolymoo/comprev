@@ -169,11 +169,11 @@ class CaptureBot():
         self.mov_unit = int(w / 25)
         # Most recently collided into object
         self.adj_obj = None
-        
+
         # Move counter for animation
-        self.move_count = 0        
+        self.move_count = 0
         self.img_name = ""
-    
+
 
     def move(self, player, *args):
         """args is a collection of iterables each containing objects. Moves closer to rect (for Capture bot it is Player)."""
@@ -195,7 +195,7 @@ class CaptureBot():
 
         # increase move_counter for animation
         self.move_count += 1
-        
+
     def render(self, screen, update_queue):
         screen.blit(self.img, self.rect)
 
@@ -317,16 +317,16 @@ class Boss():
 
         self.shield = False
         self.hp = 10
-        
+
         self.img_name = ""
-        
+
         self.fps = None
-        
+
         self.clock = time.Clock()
         self.shield_time = 3000
 
         self.time = 0
-        
+
     def render(self, screen, update_queue):
         screen.blit(self.img, self.rect)
 
@@ -334,18 +334,18 @@ class Boss():
 
     def move(self, player, *args):
         return
-    
+
     def shield_on(self):
         self.shield = True
         self.time = 0
         self.clock = time.Clock()
-        
+
     def shield_off(self):
         self.shield = False
         self.time = 0
         self.clock = None
-    
+
     def on_death(self):
         self.noise.play()
 
-        return BotMess(self.rect.copy())        
+        return BotMess(self.rect.copy())

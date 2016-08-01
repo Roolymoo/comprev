@@ -99,6 +99,9 @@ if __name__ == "__main__":
     BOSS_SMILE = load_img("boss_smile.png")
     BOSS_SHIELD = load_img("boss_smile_shield.png")
 
+    BOSS_SMILE2 = load_img("boss_smile2.png")
+    BOSS_SHIELD2 = load_img("boss_shield2.png")
+
     # clocks for doors
     door_times = [0, 0, 0, 0]
     door_clocks = [None, None, None, None]
@@ -317,7 +320,11 @@ if __name__ == "__main__":
                         # Check if shield should be turned off
                         if monster.time > monster.shield_time:
                             monster.shield_off()
-                            update_image(monster, BOSS_SMILE, "smile")
+
+                            if monster.hp < 5:
+                                update_image(monster, BOSS_SMILE2, "smile")
+                            else:
+                                update_image(monster, BOSS_SMILE, "smile")
 
                 monster.render(screen, update_queue)
 
@@ -398,7 +405,12 @@ if __name__ == "__main__":
                                     monster.fps = FPS
 
                                 monster.shield_on()
-                                update_image(monster, BOSS_SHIELD, "shield")
+
+                                if monster.hp < 5:
+                                    update_image(monster, BOSS_SHIELD2, "shield")
+                                else:
+                                    update_image(monster, BOSS_SHIELD, "shield")
+
 
                             # remove from screen
                             background.render(screen, update_queue, monster.rect.copy())
