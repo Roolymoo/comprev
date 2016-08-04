@@ -3,7 +3,7 @@ import os.path
 
 import pygame
 from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p, K_ESCAPE, K_y, K_n, K_g
-from pygame import time, font, Rect, display
+from pygame import time, font, Rect, display, mixer
 from img import load_img
 
 from render import update_display
@@ -14,6 +14,7 @@ from collision import is_collides
 from monsters import CaptureBot, LaserBot, PatrolBot, WaitBot, PatrolLaserBot, Boss
 from events import Spawner
 
+from random import shuffle, randint
 
 def _is_killed_all(monster_list):
     """does not count PatrolBots."""
@@ -38,6 +39,29 @@ def _load_level(level):
 def update_image(mover, new_image, new_name):
     mover.img = new_image
     mover.img_name = new_name
+
+def shake_screen(screen):
+    blank_screen = screen.copy()
+    blank_screen.fill((0,0,0))
+
+    screen_copy = screen.copy()
+
+    noise = mixer.Sound(os.path.join("sounds", "explosion_hard1.wav"))
+
+    for i in range(1,500):
+        offset = randint(-10,10)
+        screen.blit(blank_screen, (0,0))
+        screen.blit(screen_copy, (offset,0))
+        time.wait(10)
+        display.flip()
+
+        # play noise
+        if i % 100 == 0:
+            noise.play()
+
+    screen.blit(blank_screen, (0,0))
+    screen.blit(screen_copy, (0,0))
+    display.flip()
 
 if __name__ == "__main__":
     # init
@@ -198,6 +222,10 @@ if __name__ == "__main__":
                 pygame.mixer.music.play(-1)
                 music_advance = False
 
+            if level == 4:
+                #Do stuff
+                pass
+
             if event.type == KEYDOWN:
                 # ~~~~~DEBUG ONLY~~~~~~~~~~~~~~
                 if event.key == K_g:
@@ -250,6 +278,7 @@ if __name__ == "__main__":
 
             elif event.type == KEYUP:
                 if event.key == K_p and not pause:
+
                     # player left poop bomb!
                     if bomb_ctr < BOMB_LIMIT:
                         bomb_list.append(player.drop_bomb(FPS))
@@ -367,16 +396,21 @@ if __name__ == "__main__":
                             monster.hp -= 1
 
                             if monster.hp == 9:
-                                spawn_list = [1]
+                                spawn_list = [0]
 
                             elif monster.hp >=7 and monster.hp <= 8:
-                                spawn_list = [1,2]
+                                spawn_list = [0,1]
 
                             elif monster.hp >= 4 and monster.hp <= 6:
-                                spawn_list = [1,2,3]
+                                spawn_list = [0,1,2]
 
-                            elif monster.hp >= 1 and monster.hp <= 5:
-                                spawn_list = [1,2,3,4]
+                            elif monster.hp >= 2 and monster.hp <= 3:
+                                spawn_list = [0,1,2,3]
+                                shuffle(spawn_list)
+                                spawn_list = spawn_list[0:3]
+
+                            elif monster.hp == 1:
+                                spawn_list = [0,1,2,3]
 
                             else:
                                 spawn_list = []
@@ -392,11 +426,14 @@ if __name__ == "__main__":
                                 spawner_list[i].spawner.spawn(monster_list, screen, update_queue)
 
                             if monster.hp < 1:
-                                monster_mess = monster.on_death()
-                                monster_mess.render(screen, update_queue)
-                                background.obj_list.append(monster_mess)
+
+                                # initiate explosion sequence
+                                pygame.mixer.music.fadeout(2000)
+                                shake_screen(screen)
 
                                 monster_list.remove(monster)
+
+                                level += 1
 
                             else:
 

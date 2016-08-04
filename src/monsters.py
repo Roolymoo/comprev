@@ -316,7 +316,7 @@ class Boss():
         self.noise = mixer.Sound(os.path.join("sounds", "explosion_hard1.wav"))
 
         self.shield = False
-        self.hp = 10
+        self.hp = 1
 
         self.img_name = ""
 
