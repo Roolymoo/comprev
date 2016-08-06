@@ -15,6 +15,8 @@ Download the repository code ([download link for .zip](https://github.com/Roolym
 1. Python 3
 2. pygame for Python 3 ([download page here](https://bitbucket.org/pygame/pygame/downloads))
 
+If you plan to access the repo directly, note that the current branch is oldcollision2.
+
 ## How to play
 
 * Place bombs with key P. These will detonate in 3 seconds. Upon detonation, if an enemy is within a certain (rectangular) radius of the bomb, they will be harmed. Bombs will not harm the player
