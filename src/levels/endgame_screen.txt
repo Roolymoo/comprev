@@ -4,4 +4,4 @@ type=txt txt=From^the^actions^of^a^simple^133t^office^coder,^the x=1 y=5 w=1 h=1
 type=txt txt=world^will^see^levels^of^destruction^incomparable^to x=1 y=6 w=1 h=1
 type=txt txt=anything^in^history.^And^there^will^be^poop.^Ungodly, x=1 y=7 w=1 h=1
 type=txt txt=horrifying^amounts^of^poop. x=1 y=8 w=1 h=1
-type=txt txt=The^dark^age^of^humanity^begins^now. x=1 y=10 w=1 h=1
+type=txt txt=The^poopening^begins^now. x=1 y=10 w=1 h=1

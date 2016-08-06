@@ -3,7 +3,7 @@ import os.path
 
 import pygame
 from pygame.locals import QUIT, KEYDOWN, K_a, K_s, K_d, K_w, KEYUP, K_p, K_ESCAPE, K_y, K_n, K_g
-from pygame import time, font, Rect, display, mixer
+from pygame import time, display, mixer, transform
 from img import load_img
 
 from render import update_display
@@ -39,6 +39,7 @@ def _load_level(level):
 def update_image(mover, new_image, new_name):
     mover.img = new_image
     mover.img_name = new_name
+
 
 def shake_screen(screen):
     blank_screen = screen.copy()
@@ -153,7 +154,7 @@ if __name__ == "__main__":
     # levels
     level_dict = {0: STRT_SCRN_N, 1: INTRO_SCRN_N, 2: LEVEL1_N, 3: BOSS_LEVEL_N, 4: END_GAME_SCRN_N}
     # load start screen
-    level = 4
+    level = 0
 
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
@@ -181,6 +182,12 @@ if __name__ == "__main__":
         pause = True
 
     while running and (not killed):
+        if won:
+            level += 1
+            player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
+            time.wait(1000)
+            update_display(update_queue)
+            break
         # music
         if level == 2 and not music_loaded:
 
@@ -209,13 +216,6 @@ if __name__ == "__main__":
 
             music_loaded = True
 
-        # ~~~~possibly deprecated
-        # # events
-        # for event in spawner_list:
-        #     if type(event) is Spawner:
-        #         if not event.is_spawned:
-        #             event.spawn(monster_list, screen, update_queue)
-
         # input loop
         for event in pygame.event.get():
             if level == 3 and music_advance:
@@ -223,19 +223,16 @@ if __name__ == "__main__":
                 pygame.mixer.music.play(-1)
                 music_advance = False
 
-            if level == 4:
-                #Do stuff
-                pass
-
             if event.type == KEYDOWN:
-                # ~~~~~DEBUG ONLY~~~~~~~~~~~~~~
-                if event.key == K_g:
-                    destroyed = monster_list.__copy__()
-                elif event.key and level == 1:
+                if event.key and level == 1:
                     # load next level, first level with enemies
                     level += 1
                     unpause = True
                     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
+                # ~~~~~DEBUG ONLY~~~~~~~~~~~~~~
+                # kill all (not sure about boss?)
+                # elif event.key == K_g:
+                #     destroyed = monster_list.__copy__()
                 elif event.key in (K_a, K_d, K_w, K_s) and not pause:
                     # player to be moved, clear old location
                     background.render(screen, update_queue, player.rect.copy())
@@ -435,10 +432,16 @@ if __name__ == "__main__":
                                 pygame.mixer.music.fadeout(2000)
                                 shake_screen(screen)
 
+                                monster_mess = monster.on_death()
+                                w, h = monster_mess.rect.w, monster_mess.rect.h
+                                monster_mess.img = transform.scale(monster_mess.img, (w, h))
+                                monster_mess.render(screen, update_queue)
+                                background.obj_list.append(monster_mess)
+
                                 monster_list.remove(monster)
 
-                                level += 1
-
+                                # game over, player won
+                                won = True
                             else:
 
                                 # check if fps has been set to a variable
@@ -451,7 +454,6 @@ if __name__ == "__main__":
                                     update_image(monster, BOSS_SHIELD2, "shield")
                                 else:
                                     update_image(monster, BOSS_SHIELD, "shield")
-
 
                             # remove from screen
                             background.render(screen, update_queue, monster.rect.copy())
@@ -482,15 +484,6 @@ if __name__ == "__main__":
                 player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
                 music_advance = True
 
-            # check if player won
-            if level == 3 and _is_killed_all(monster_list):
-                pygame.mixer.music.fadeout(2000)
-                time.wait(2000)
-                level += 1
-                player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
-                won = True
-                running = False
-
         update_display(update_queue)
 
         fps_clock.tick(FPS)
@@ -506,6 +499,8 @@ if __name__ == "__main__":
         # Let player hit a key to quit game when they are ready
         running = True
         while running:
-             for event in pygame.event.get():
-                 if event.key:
-                     running = False
+            for event in pygame.event.get():
+                if event.type == KEYDOWN:
+                    running = False
+                elif event.type == QUIT:
+                    running = False
