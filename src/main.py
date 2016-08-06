@@ -377,6 +377,9 @@ if __name__ == "__main__":
                     bomb_ctr -= 1
                     bomb_mess, destroyed = bomb.explode(monster_list)
                     bomb_mess.render(screen, update_queue)
+                    # check if have to re-render player so not lost under bomb mess
+                    if is_collides(player.rect, [bomb_mess]):
+                        player.render(screen, update_queue)
                     background.obj_list.append(bomb_mess)
 
             # re-render any player or monster intersecting any bomb's rect so they are rendered on top
