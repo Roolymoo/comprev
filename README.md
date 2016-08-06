@@ -4,9 +4,10 @@ A video game where you play as an aggravated office worker intent on destroying 
 
 ## Download
 
-### Option 1: Windows executable installer
+### Option 1: Executable installer
 
-To come...
+1. Windows: To come...
+2. Linux: To come...
 
 ### Option 2: Python code
 
