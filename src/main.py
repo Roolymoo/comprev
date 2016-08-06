@@ -106,6 +106,7 @@ if __name__ == "__main__":
     BOSS_LEVEL_N = "boss_level.txt"
     STRT_SCRN_N = "startscreen.txt"
     INTRO_SCRN_N = "intro_level.txt"
+    END_GAME_SCRN_N = "endgame_screen.txt"
 
     # Animation Prerendered Surfaces
     PLAYER_RIGHT_1 = load_img("man_2_right1.png")
@@ -150,9 +151,9 @@ if __name__ == "__main__":
     background = Background(WINDOW_WIDTH, WINDOW_HEIGHT, GREY)
 
     # levels
-    level_dict = {0: STRT_SCRN_N, 1: INTRO_SCRN_N, 2: LEVEL1_N, 3: BOSS_LEVEL_N}
+    level_dict = {0: STRT_SCRN_N, 1: INTRO_SCRN_N, 2: LEVEL1_N, 3: BOSS_LEVEL_N, 4: END_GAME_SCRN_N}
     # load start screen
-    level = 3
+    level = 4
 
     # portal is rect of where the player has to get to after killing all computer's to advance to next level
     player, portal, env_obj_list, monster_list, spawner_list = _load_level(level)
@@ -175,7 +176,7 @@ if __name__ == "__main__":
     # for toggling pause at end of main loop
     unpause = False
 
-    if level in (0, 1):
+    if level in (0, 1, 4):
         # prevent certain unwanted processes for running
         pause = True
 
