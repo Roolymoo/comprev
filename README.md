@@ -6,9 +6,9 @@ A video game where you play as an aggravated office worker intent on destroying 
 
 ### Option 1: Executable installer
 
-In each option, unpack the zip, and run the executable "main" inside to install.
+In each option, unpack the zip, and run the executable "main" inside to launch the game.
 
-1. Windows: To come...
+1. Windows: [zip download link](https://github.com/Roolymoo/comprev/raw/oldcollision2/src/build/exe.win32-3.3.zip)
 2. Linux: [zip download link](https://github.com/Roolymoo/comprev/raw/oldcollision2/src/build/exe.linux-x86_64-3.4.zip)
 
 ### Option 2: Python code
